@@ -2,18 +2,27 @@ import pandas as pd
 import plotly.express as px
 import warnings
 import settings
+import numpy as np
+import math
 warnings.filterwarnings("ignore")
 pd.set_option('display.max_columns', 1000)  # or None
 pd.set_option('display.max_rows', 1000)  # or None
 pd.set_option('display.max_colwidth', 100)  # or None
 
-#path = 'C:\\Users\\TARIQOPLATA\\PycharmProjects\\FAERS_final\\'
+# path = 'C:\\Users\\TARIQOPLATA\\PycharmProjects\\FAERS_final\\'
 path = '/Users/ftk/Documents/Work/FAERS_final/'
 
 
 def bar_chart(df):
-    #df = df[df['Sex'] == 'M']
-    fig = px.bar(df, x="AE", y="IC025", color='DRUG', barmode='stack', height=400)
+    # df = df[df['Sex'] == 'M']
+    fig = px.bar(df, x="AE", y="IC025", color='Sex', barmode='group', height=400, pattern_shape="DRUG",
+                 color_discrete_map=settings.colors_g, pattern_shape_map={'zopiclone': '+', 'eszopiclone': '-'})
+    # ["+", "-"]
+    fig.update_layout(
+        font=dict(
+            size=18,
+        )
+    )
     fig.show()
 
 
@@ -40,15 +49,15 @@ def scatter(df):
     df_z = df_z.sort_values(by=['IC025'], ascending=False)
     df_z = df_z.head(10)
     print(df_z)
-    #df2 = df.groupby(by=['AE'], as_index=False).sum()
-    #df2 = df2.sort_values(by=['IC025'], ascending=False)
-    #df2 = df2.head(20)
-    #aes = df2['AE'].tolist()
+    # df2 = df.groupby(by=['AE'], as_index=False).sum()
+    # df2 = df2.sort_values(by=['IC025'], ascending=False)
+    # df2 = df2.head(20)
+    # aes = df2['AE'].tolist()
     aes = df_e['AE'].tolist() + df_z['AE'].tolist()
     df = df[df['AE'].isin(aes)]
     fig = px.scatter(df, y="IC025", x="AE", color="Sex", symbol="DRUG", color_discrete_map=settings.colors_g)
     fig.update_traces(marker_size=15)
-    #fig.update_layout(scattermode="group")
+    # fig.update_layout(scattermode="group")
     fig.show()
 
 
@@ -86,24 +95,54 @@ def create_bar():
     df_m_old['Sex'] = 'M'
     frames = [df_f_old, df_m_old]
     df = pd.concat(frames)
-    df1 = df.sort_values(by=['IC025'], ascending=True)
-    df1 = df1.head(20)
-    df2 = df.sort_values(by=['IC025'], ascending=False)
-    df2 = df2.head(20)
-    aes = df1['AE'].tolist() + df2['AE'].tolist()
-    df = df[df['AE'].isin(aes)]
+    df = df.sort_values(by=['IC025'], ascending=True)
+    # df1 = df1.head(20)
+    # df2 = df.sort_values(by=['IC025'], ascending=False)
+    # df2 = df2.head(20)
+    # aes = df1['AE'].tolist() + df2['AE'].tolist()
+    # df = df[df['AE'].isin(aes)]
     df = df.drop_duplicates(subset=['DRUG', 'AE', 'Sex', 'Reports'])
+    find_max(df)
+    # bar_chart(df)
+
+
+def find_max(df):
+    aes = df['AE'].tolist()
+    maxis = {}
+    for item in aes:
+        df_sub = df[df['AE'] == item]
+        df_zop = df_sub[df_sub['DRUG'] == 'zopiclone']
+        df_eszop = df_sub[df_sub['DRUG'] == 'eszopiclone']
+        maxZop = df_zop['IC025'].max()
+        maxEsz = df_eszop['IC025'].max()
+        diff = abs(maxZop-maxEsz)
+        print([diff, maxEsz, maxZop, item])
+        if math.isnan(diff):
+            continue
+        if item not in maxis:
+            maxis[item] = diff
+        else:
+            continue
+    maxis = dict(sorted(maxis.items(), key=lambda item: item[1]))
+    aes = []
+    i = 1
+    it = list(maxis.items())
+    while i <= 10:
+        x = it[-i]
+        aes.append(x[0])
+        i += 1
+    print(maxis)
+    print(aes)
+    df = df[df['AE'].isin(aes)]
     bar_chart(df)
 
 
 def main():
     create_bar()
-    #drug_totals = pd.read_csv(path + 'data/New/Drugs_Gender_Size.csv')
+    # drug_totals = pd.read_csv(path + 'data/New/Drugs_Gender_Size.csv')
 
-
-
-    #df_m1_old = df_m_old[df_m_old['DRUG'].isin(drug)]
-    #df_f1_old = df_f_old[df_f_old['DRUG'].isin(drug)]
+    # df_m1_old = df_m_old[df_m_old['DRUG'].isin(drug)]
+    # df_f1_old = df_f_old[df_f_old['DRUG'].isin(drug)]
     """
     drug_totals = drug_totals[drug_totals['DRUG'].isin(drug)]
 
@@ -121,8 +160,8 @@ def main():
                                     'Reports': row['Reports'], 'Reports_percentages': rep_per}, ignore_index=True)
     df_final = df_final.drop_duplicates(subset=['DRUG', 'AE', 'Sex', 'Reports', 'Reports_percentages'], keep='first', ignore_index=True)
     df_final.to_csv('Zopi_eszopi.csv')"""
-    #pie_chart(df_m1, 'M', 'eszopiclone')
-    #pie_chart(df_f1, 'F', 'eszopiclone')
+    # pie_chart(df_m1, 'M', 'eszopiclone')
+    # pie_chart(df_f1, 'F', 'eszopiclone')
 
 
 if __name__ == '__main__':
