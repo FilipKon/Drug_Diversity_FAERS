@@ -32,6 +32,19 @@ symbols_d = {'alprazolam': "/", 'diazepam': ".", 'lorazepam': "x", 'clonazepam':
             'zopiclone': "+", 'bromazepam': "/", 'oxazepam': "x", "nitrazepam": "x",
             'clobazam': "/", 'midazolam': "x", 'remimazolam': "-"}
 
+symbols_d = {'nervous system neoplasms benign': "/", 'adjustment disorders (incl subtypes)': ".", 'demyelinating disorders': "x",
+             'headaches': "-",
+            'nervous system neoplasms malignant and unspecified nec': "/", 'central nervous system infections and inflammations': "+",
+             'neurological disorders of the eye': ".",
+            'spinal cord and nerve root disorders': "/", 'triazulenone': "x", 'quazepam': "-", 'nordazepam': "|",
+            'tofisopam': "+", 'mexazolam': ".", 'ketazolam': "/",
+            'cinolazepam': "x", 'oxazolam': "-", 'lormetazepam': "|", 'prazepam': "+",
+            'flunitrazepam': ".", 'estazolam': "/", 'ethyl loflazepate': "",
+            'etizolam': "-", 'brotizolam': "|", 'clorazepate': "+", 'triazolam': ".",
+            'flurazepam': "/", 'zaleplon': "x", 'eszopiclone': "-",
+            'zopiclone': "+", 'bromazepam': "/", 'oxazepam': "x", "nitrazepam": "x",
+            'clobazam': "/", 'midazolam': "x", 'remimazolam': "-"}
+
 symbols = {'alprazolam': 'circle', 'diazepam': 'hexagon', 'lorazepam': 'star', 'clonazepam': 'square',
            'zolpidem': 'diamond', 'tetrazepam': 'cross', 'cloxazolam': 'x', 'clotiazepam': 'star-triangle-up-open',
            'flumazenil': 'pentagon', 'triazulenone': 'hourglass', 'quazepam': 'octagon', 'nordazepam': 'arrow',
