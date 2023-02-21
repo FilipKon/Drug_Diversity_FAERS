@@ -162,6 +162,7 @@ def main():
     df_f['Sex'] = 'F'
     frames = [df_f, df_m]
     df = pd.concat(frames)
+    df = df.drop_duplicates(subset=['DRUG', 'AE', 'IC025', 'Sex', 'Reports'], keep='first', ignore_index=True)
     get_drug_totals(df)
 
 
