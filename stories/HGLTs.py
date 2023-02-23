@@ -223,6 +223,7 @@ def create_hglts_v1():
     fig.show()
 
 
+
 def get_perc(df):
     df = df.drop_duplicates(subset=['DRUG', 'AE', 'IC025', 'Reports'], keep='first')
     df_drug = pd.read_csv('C:\\Users\\TARIQOPLATA\\PycharmProjects\\FAERS_final\\data\\data\\New\\Drugs_Gender_Size.csv')

@@ -24,6 +24,7 @@ def thomas_results():
     #plt.show()
     labels = df_combo['DRUG'].tolist()
     dfs = df_combo.loc[:, df_combo.columns != 'DRUG']
+    cluster(dfs, labels)
     #cluster(dfs, labels)
     fig = ff.create_dendrogram(dfs, labels=labels)
     fig.update_layout(width=1400, height=1050)
@@ -37,12 +38,16 @@ def thomas_results():
 
 
 def cluster(df, labels):
+    g = sns.clustermap(df, cmap="vlag", yticklabels=1, xticklabels=1)
+    g.ax_heatmap.set_xticklabels(labels, rotation=90)
+    g.ax_heatmap.set_yticklabels(labels, rotation=0)
+    #plt.setp(cg.ax_heatmap.yaxis.get_majorticklabels(), rotation=0)
     linkage_data = linkage(df, method='ward', metric='euclidean')
     dendrogram(linkage_data, labels=labels)
     ax = plt.gca()
     ax.tick_params(axis='x', which='major', labelsize=12)
     ax.tick_params(axis='y', which='major', labelsize=8)
-    plt.savefig('clustering_figure_thomas.png')
+    #plt.savefig('clustering_figure_thomas.png')
     plt.show()
     #dn = dendrogram(df, labels=labels)
     #plt.show()
@@ -90,4 +95,4 @@ def main():
 
 
 if __name__ == '__main__':
-    main()
+    thomas_results()
