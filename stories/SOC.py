@@ -24,6 +24,7 @@ path = 'C:\\Users\\TARIQOPLATA\\PycharmProjects\\FAERS_final\\'
 #path = '/Users/ftk/Documents/Work/FAERS_final'
 colors_g = {'F': '#e5a2bd', 'M': '#9aceeb'}
 
+
 def reports_perc(df, ht2):
     print(df.columns)
     dfx = df.sort_values(['DRUG'], ascending=False, ignore_index=True, kind="mergesort")
