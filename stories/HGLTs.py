@@ -119,12 +119,12 @@ def scatter_chart(df, ht, sex, fig, i, j):
 def bar_chart_v2(df, ht, sex, fig, i):
     df = df[df['Sex'] == sex]
     df = df[df['HT_level2'] == ht]
-    df = df.sort_values(by='IC025', ascending=False)
+    df = df.sort_values(by='Reports_Percent', ascending=False)
 
     fig.add_trace(
         go.Bar(
             x=df['HT_level2'],
-            y=[df['IC025'].sum()],
+            y=[df['Reports_Percent'].sum()],
             name=sex,
             marker_color=colors_g.get(sex),
             offsetgroup=i,
@@ -185,14 +185,15 @@ def scatter_chart_v2(df, ht, sex, fig, i, j):
     return fig
 
 
-
 def create_hglts_v1():
     path = 'C:\\Users\\TARIQOPLATA\PycharmProjects\\FAERS_final\\data\\data\\Old_gold\\'
+    path = '/Users/ftk/Documents/Work/FAERS_final/data/Old_gold/'
     # path = '/Users/ftk/Documents/Work/FAERS_final/data/Old_gold/'
     df_f = pd.read_csv(path + 'Disprop_analysis_female_with_HTs.csv')
     df_m = pd.read_csv(path + 'Disprop_analysis_male_with_HTs.csv')
-    hts = ['anxiety disorders and symptoms', 'suicidal and self-injurious behaviours nec',
-           'sleep disorders and disturbances', 'psychiatric disorders nec']
+    hts = ['anxiety disorders and symptoms']
+    #'suicidal and self-injurious behaviours nec',
+    #       'sleep disorders and disturbances', 'psychiatric disorders nec'
     # 'sleep disturbances (incl subtypes)' SLEEPS PUT TOGETHER
     df_f = df_f[df_f['HT_level2'].isin(hts)]
     df_m = df_m[df_m['HT_level2'].isin(hts)]
@@ -223,10 +224,10 @@ def create_hglts_v1():
     fig.show()
 
 
-
 def get_perc(df):
     df = df.drop_duplicates(subset=['DRUG', 'AE', 'IC025', 'Reports'], keep='first')
-    df_drug = pd.read_csv('C:\\Users\\TARIQOPLATA\\PycharmProjects\\FAERS_final\\data\\data\\New\\Drugs_Gender_Size.csv')
+    #df_drug = pd.read_csv('C:\\Users\\TARIQOPLATA\\PycharmProjects\\FAERS_final\\data\\data\\New\\Drugs_Gender_Size.csv')
+    df_drug = pd.read_csv('/Users/ftk/Documents/Work/FAERS_final/data/New/Drugs_Gender_Size.csv')
     df_fin = pd.DataFrame(columns=['DRUG', 'AE', 'Sex', 'Reports', 'Reports_Percent', 'IC025', 'Total_Reports', 'HT', 'HT_level2'])
     for index, row in df.iterrows():
         df_sub_drug = df_drug[df_drug['DRUG'] == row['DRUG']]
@@ -241,13 +242,22 @@ def get_perc(df):
     return df_fin
 
 
+def create_perc_figures(df, hts):
+    # Create 2 layered bar chart with hts and sex separately
+    j = 0
+    for item in hts:
+        fig = bar_chart_v2(df)
+
+
 def main():
-    path = 'C:\\Users\\TARIQOPLATA\PycharmProjects\\FAERS_final\\data\\data\\Old_gold\\'
+    path = '/Users/ftk/Documents/Work/FAERS_final/data/Old_gold/'
+    #path = 'C:\\Users\\TARIQOPLATA\PycharmProjects\\FAERS_final\\data\\data\\Old_gold\\'
     # path = '/Users/ftk/Documents/Work/FAERS_final/data/Old_gold/'
     df_f = pd.read_csv(path + 'Disprop_analysis_female_with_HTs.csv')
     df_m = pd.read_csv(path + 'Disprop_analysis_male_with_HTs.csv')
-    hts = ['anxiety disorders and symptoms', 'suicidal and self-injurious behaviours nec',
-           'sleep disorders and disturbances', 'psychiatric disorders nec']
+    hts = ['psychiatric disorders nec', 'suicidal and self-injurious behaviours nec', 'anxiety disorders and symptoms']
+        #, 'suicidal and self-injurious behaviours nec',
+        #   'sleep disorders and disturbances', 'psychiatric disorders nec']
     # 'sleep disturbances (incl subtypes)' SLEEPS PUT TOGETHER
     df_f = df_f[df_f['HT_level2'].isin(hts)]
     df_m = df_m[df_m['HT_level2'].isin(hts)]
@@ -269,22 +279,24 @@ def main():
     fig = make_subplots(specs=[[{"secondary_y": True}]])
     fig.update_layout(scattermode="group", xaxis=dict(title='higher level group terms (HLGT)'),
                       yaxis=dict(
-                          title="Reports %",
+                          title="IC025 (drugs)",
                       ),
                       yaxis2=dict(
-                          title="IC025"),
+                          title="Reports_Percent (sex)"),
                       font=dict(
                           size=18
                       ))
+    create_perc_figures(df, hts)
     j = 0
-    for item in hts:
-        fig = bar_chart_v2(df, item, 'M', fig, 1)
-        fig = scatter_chart_v2(df, item, 'M', fig, 1, j)
-        j += 1
-        fig = bar_chart_v2(df, item, 'F', fig, 2)
-        fig = scatter_chart_v2(df, item, 'F', fig, 2, j)
-
-    fig.show()
+    #for item in hts:
+    #    fig = bar_chart_v2(df, item, 'M', fig, 1)
+        #fig = scatter_chart_v2(df, item, 'M', fig, 1, j)
+    #    fig = scatter_chart(df, item, 'M', fig, 1, j)
+    #    j += 1
+    #    fig = bar_chart_v2(df, item, 'F', fig, 2)
+        #fig = scatter_chart_v2(df, item, 'F', fig, 2, j)
+    #    fig = scatter_chart(df, item, 'F', fig, 2, j)
+    #fig.show()
 
     # fig.show()
 
