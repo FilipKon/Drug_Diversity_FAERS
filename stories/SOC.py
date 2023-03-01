@@ -8,7 +8,16 @@ warnings.filterwarnings("ignore")
 pd.set_option('display.max_columns', 1000)  # or None
 pd.set_option('display.max_rows', 1000)  # or None
 pd.set_option('display.max_colwidth', 100)  # or None
-
+symbols_d = {'alprazolam': "/", 'diazepam': ".", 'lorazepam': "x", 'clonazepam': "-",
+             'zolpidem': "/", 'tetrazepam': "+", 'cloxazolam': ".",
+             'flumazenil': "/", 'triazulenone': "x", 'quazepam': "-", 'nordazepam': "|",
+             'tofisopam': "+", 'mexazolam': ".", 'ketazolam': "/",
+             'cinolazepam': "x", 'oxazolam': "-", 'lormetazepam': "|", 'prazepam': "+",
+             'flunitrazepam': ".", 'estazolam': "/", 'ethyl loflazepate': "",
+             'etizolam': "-", 'brotizolam': "|", 'clorazepate': "+", 'triazolam': ".",
+             'flurazepam': "/", 'zaleplon': "x", 'eszopiclone': "-",
+             'zopiclone': "+", 'bromazepam': "/", 'oxazepam': "x", "nitrazepam": "x",
+             'clobazam': "/", 'midazolam': "x", 'remimazolam': "-"}
 colors_d = {'alprazolam': '#FF5733', 'diazepam': '#75A7AB', 'lorazepam': '#B73C22', 'clonazepam': '#906056',
             'zolpidem': '#9DF8DF', 'tetrazepam': '#ff9d5c', 'cloxazolam': '#4b4c07', 'clotiazepam': '#e9fe92',
             'flumazenil': '#D6DA03', 'triazulenone': '#FFD4EB', 'quazepam': '#F9C469', 'nordazepam': '#68D6DF',
@@ -99,9 +108,12 @@ def get_drug_totals(df):
             else:
                 ic025_sum = df_x2['IC025'].sum()
                 reports = df_x2['Reports'].sum()
-            df_g = df_g.append({'DRUG': item, 'HTLGT': element, 'IC025_sum': ic025_sum, 'Reports_sum': reports, 'Sex': 'F'},
+            df_g = df_g.append({'DRUG': item, 'HTLGT': element, 'IC025_sum': ic025_sum, 'Reports_sum': reports,
+                                'Sex': 'F'},
                                ignore_index=True)
-    df_1 = df_g[df_g['Sex'] == 'F']
+
+
+"""
     fig = px.pie(df_1, values='IC025_sum', names='DRUG', title='Female', color='DRUG', hole=.2, color_discrete_map=colors_d)
     fig.update_traces(textposition='inside', textinfo='label+text+value+percent')
     fig.update_layout(
@@ -109,7 +121,7 @@ def get_drug_totals(df):
             size=18
         )
     )
-    fig.show()
+    #fig.show()
     df_1 = df_g[df_g['Sex'] == 'M']
     fig = px.pie(df_1, values='IC025_sum', names='DRUG', title='Male', hole=.2, color='DRUG', color_discrete_map=colors_d)
     fig.update_traces(textposition='inside', textinfo='label+text+value+percent')
@@ -118,8 +130,7 @@ def get_drug_totals(df):
             size=18
         )
     )
-
-    fig.show()
+    #fig.show()"""
 """
     df_99 = df_g.groupby(['DRUG'], as_index=False).sum()
     df_99 = df_99.sort_values(by='IC025_sum', ascending=False)
@@ -164,7 +175,43 @@ def main():
     frames = [df_f, df_m]
     df = pd.concat(frames)
     df = df.drop_duplicates(subset=['DRUG', 'AE', 'IC025', 'Sex', 'Reports'], keep='first', ignore_index=True)
-    get_drug_totals(df)
+    df = df.groupby(by=['DRUG', 'Sex'], as_index=False).sum()
+    fig = go.Figure()
+    df_f1 = df[df['Sex'] == 'F']
+    df_m1 = df[df['Sex'] == 'M']
+    df_f1 = df_f1.sort_values(['IC025'], ignore_index=True, ascending=False)
+    df_m1 = df_m1.sort_values(['IC025'], ignore_index=False, ascending=False)
+    df_fx = df_f1.head(10)
+    df_mx = df_m1.head(10)
+    drugies = df_fx['DRUG'].tolist() + df_mx['DRUG'].tolist()
+    drugies = list(dict.fromkeys(drugies))
+    df_f1 = df_f1[df_f1['DRUG'].isin(drugies)]
+    df_m1 = df_m1[df_m1['DRUG'].isin(drugies)]
+    df_f1 = df_f1.sort_values(['DRUG'], ignore_index=True, ascending=False)
+    df_m1 = df_m1.sort_values(['DRUG'], ignore_index=False, ascending=False)
+    print(df_f1)
+    print(df_m1)
+    fig.add_trace(go.Scatterpolar(
+        r=df_f1['IC025'],
+        theta=df_f1['DRUG'],
+        name='Female'
+    ))
+
+    fig.add_trace(go.Scatterpolar(
+        r=df_m1['IC025'],
+        theta=df_m1['DRUG'],
+        name='Male'
+    ))
+    fig.update_layout(
+        polar=dict(
+            radialaxis=dict(
+                visible=True,
+                #range=[0, 5]
+            )),
+        showlegend=True
+    )
+    fig.show()
+    #get_drug_totals(df)
 
 
 def new_radar_fig2(drugies, df, hts, gender):
