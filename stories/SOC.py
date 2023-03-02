@@ -265,5 +265,26 @@ def new_radar_fig2(drugies, df, hts, gender):
     fig.show()
 
 
+def fig4_overview():
+    df_f = pd.read_csv(path + '\\data\\data\\Old_gold\\Disprop_analysis_female_with_HTs.csv')
+    df_m = pd.read_csv(path + '\\data\\data\\Old_gold\\Disprop_analysis_male_with_HTs.csv')
+    df_m['Sex'] = 'M'
+    df_f['Sex'] = 'F'
+    frames = [df_f, df_m]
+    df = pd.concat(frames)
+    df = df.groupby(['HT', 'Sex'], as_index=False).sum()
+    df = df.sort_values(['IC025'], ascending=False)
+    fig1 = px.bar(df, x="HT", y="IC025", color='Sex', barmode='group', color_discrete_map=colors_g)
+    fig1.update_layout(
+        xaxis_title="System Organ Classes (SOCs)",
+        yaxis_title="cIC025",
+        legend_title="Sex",
+        font=dict(
+            size=18,
+        )
+    )
+    fig1.show()
+    
+    
 if __name__ == '__main__':
-    main()
+    fig4_overview()

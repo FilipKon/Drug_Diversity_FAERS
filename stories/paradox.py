@@ -5,7 +5,7 @@ import HGLTs
 path = 'C:\\Users\\TARIQOPLATA\\PycharmProjects\\FAERS_final\\data\\data\\Old_gold\\'
 # path = '\Users\'
 
-#
+"""
 terms = ['activation syndrome', 'agitation', 'nervousness', 'terminal agitation', 'limited symptom panic attack',
          'panic attack', 'panic reaction', 'hyperarousal', 'psychomotor hyperactivity', 'restlessness',
          'automatism', 'head banging', 'stereotypy', 'disorganised speech', 'logorrhoea', 'repetitive speech',
@@ -29,7 +29,8 @@ terms = ['activation syndrome', 'agitation', 'nervousness', 'terminal agitation'
          'transient global amnesia', 'seizure', 'epilepsy', 'tonic clonic movements', 'seizure like phenomena',
          'status epilepticus', 'seizure cluster', 'convulsive threshold lowered', 'convulsions local',
          'clonic convulsion', 'change in seizure presentation', 'atonic seizures', 'simple partial seizures',
-         'parietal lobe epilepsy']
+         'parietal lobe epilepsy']"""
+terms = ['agitation', 'restlessness', 'logorrhoea']
 #'Generalised onset non-motor seizure', 'Juvenile absence epilepsy', 'Petit mal epilepsy', 'Generalised tonic-clonic seizure', 'Automatism epileptic'
 #'Epileptic psychosis', 'Focal dyscognitive seizures
 

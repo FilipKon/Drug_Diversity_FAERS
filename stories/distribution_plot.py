@@ -30,7 +30,6 @@ symbols_d = {'alprazolam': "/", 'diazepam': ".", 'lorazepam': "x", 'clonazepam':
              'zopiclone': "+", 'bromazepam': "/", 'oxazepam': "x", "nitrazepam": "x",
              'clobazam': "/", 'midazolam': "x", 'remimazolam': "-"}
 
-
 """
     ZEIGE MIR IN EINEM PLOT WELCHE DRUGS ODER AES EINE TENDENZ NUR FÜR FRAUEN ODER MÄNNER HABEN
     
@@ -158,7 +157,7 @@ def main_copy():
     #fig.write_html('Sum_of_AE_reports_in_bin_' + ht + '.html')"""
 
 
-def main():
+def main_v1():
     # path = '/Users/ftk/Documents/Work/FAERS_final/data/Old_gold/'
     path = 'C:\\Users\\TARIQOPLATA\PycharmProjects\\FAERS_final\\data\\data\\Old_gold\\'
     # path = '/Users/ftk/Documents/Work/FAERS_final/data/Old_gold/'
@@ -179,22 +178,36 @@ def main():
         df_f = df.loc[(df['DRUG'] == row['DRUG']) & (df['AE'] == row['AE']) & (df['Sex'] == 'F')]
         df_m = df.loc[(df['DRUG'] == row['DRUG']) & (df['AE'] == row['AE']) & (df['Sex'] == 'M')]
         if df_f.empty:
-            #continue
-            ratio = 1 / df_m['ROR'].values[0]
-            count = df_m['ROR'].values[0]
+            # continue
+            ratio = 1 / df_m['IC025'].values[0]
+            count = df_m['IC025'].values[0]
         elif df_m.empty:
-            #continue
-            ratio = df_f['ROR'].values[0] / 1
-            count = df_f['ROR'].values[0]
+            # continue
+            ratio = df_f['IC025'].values[0] / 1
+            count = df_f['IC025'].values[0]
         else:
-            ratio = df_f['ROR'].sum() / df_m['ROR'].sum()
-            count = df_f['ROR'].sum() + df_m['ROR'].sum()
+            ratio = df_f['IC025'].sum() / df_m['IC025'].sum()
+            count = df_f['IC025'].sum() + df_m['IC025'].sum()
         total_df = total_df.append({'DRUG': row['DRUG'], 'AE': row['AE'], 'Ratio': ratio, 'Count': count,
-                                    'IC025_m': df_m['ROR'].sum(), 'IC025_f': df_f['ROR'].sum()},
+                                    'IC025_m': df_m['IC025'].sum(), 'IC025_f': df_f['IC025'].sum()},
                                    ignore_index=True)
-    total_df = total_df.sort_values('Ratio', ascending=True)
-    total_df.to_csv('Distributions.csv')
-    print(total_df)
+    total_df = total_df.sort_values('DRUG', ascending=True)
+    # total_df.to_csv('Distributions.csv')
+
+    fig = px.scatter(total_df, x="IC025_f", y="IC025_m", color="DRUG", hover_data=['AE'])
+    #fig.show()
+    # fig = px.imshow(total_df, x="IC025_f", y="IC025_m")
+    # fig.show()
+    df_m1 = total_df[total_df['IC025_f'] != '0.0']
+    df_f1 = total_df[total_df['IC025_m'] != '0.0']
+    print(df_m1)
+    fig = px.pie(df_m1, values='IC025_m', names="DRUG", title="Percentage of drugs having only male AEs MALE")
+    fig.show()
+    fig = px.pie(df_f1, values='IC025_f', names="DRUG", title="Percentage of drugs having only male AEs FEMALE")
+    fig.show()
+
+
+    """
     fre = total_df.assign(
         bins=pd.cut(total_df["Ratio"], [0.000, 0.167, 0.200, 0.250, 0.333, 0.500, 0.800, 1.250, 2.000, 3.000,
                                         4.000, 5.000, 6.000, 500.000], labels=['0 to 0.167', '0.167 to 0.2',
@@ -204,9 +217,9 @@ def main():
                                                                                '2 to 3', '3 to 4', '4 to 5',
                                                                                '5 to 6', '6 to 500']))
     print(fre)
-    #fre_count_sum = fre.groupby(["bins", "DRUG"], as_index=False)["Ratio"].sum()
+    # fre_count_sum = fre.groupby(["bins", "DRUG"], as_index=False)["Ratio"].sum()
     fre_count_sum = fre.groupby(["bins", "DRUG"], as_index=False).sum()
-    fig = px.bar(fre_count_sum, x='bins', y='Count', color='DRUG', title="Sum of drug reports in bin",
+    fig = px.bar(fre_count_sum, x='bins', y='Ratio', color='DRUG', title="Sum of drug reports in bin",
                  color_discrete_map=colors_d, pattern_shape="DRUG", pattern_shape_map=symbols_d)
     fig.update_layout(
         xaxis_title="Ratios",
@@ -216,7 +229,7 @@ def main():
     fig.show()
 
     fre_AE_sum = fre.groupby(["bins", "AE"], as_index=False).sum()
-    fig = px.bar(fre_AE_sum, x='bins', y='Count', color='AE', title="Counts of AE in bin")
+    fig = px.bar(fre_AE_sum, x='bins', y='Ratio', color='AE', title="Counts of AE in bin")
     fig.update_layout(
         xaxis_title="Ratios",
         yaxis_title="Sum of IC025 per AE in ratio range"
@@ -224,12 +237,12 @@ def main():
     fig.show()
 
     fre_AE_sum = fre.groupby(["bins", "AE", "DRUG"], as_index=False).sum()
-    fig = px.bar(fre_AE_sum, x='bins', y='Count', color='DRUG', title="Counts of AE in bin")
+    fig = px.bar(fre_AE_sum, x='bins', y='Ratio', color='DRUG', title="Counts of AE in bin")
     fig.update_layout(
         xaxis_title="Ratios",
         yaxis_title="Sum of IC025 per DRUG, AE in ratio range"
     )
-    fig.show()
+    fig.show()"""
 
     """
     #fig.write_html('Sumofdrugreportsinbin_' + ht + '.html')
@@ -256,5 +269,33 @@ def main():
     #fig.write_html('Sum_of_AE_reports_in_bin_' + ht + '.html')"""
 
 
+def main():
+    # path = '/Users/ftk/Documents/Work/FAERS_final/data/Old_gold/'
+    path = 'C:\\Users\\TARIQOPLATA\PycharmProjects\\FAERS_final\\data\\data\\Old_gold\\'
+    # path = '/Users/ftk/Documents/Work/FAERS_final/data/Old_gold/'
+    df_f = pd.read_csv(path + 'Disprop_analysis_female_with_HTs.csv')
+    df_m = pd.read_csv(path + 'Disprop_analysis_male_with_HTs.csv')
+    hts = ['nervous system disorders', 'psychiatric disorders']
+    df_f = df_f[df_f['HT'].isin(hts)]
+    df_m = df_m[df_m['HT'].isin(hts)]
+    df_f['Sex'] = 'F'
+    df_m['Sex'] = 'M'
+    frames = [df_f, df_m]
+    df = pd.concat(frames)
+    fre = df.assign(
+        bins=pd.cut(df["IC025"], [0.000, 0.167, 0.200, 0.250, 0.333, 0.500, 0.800, 1.250, 2.000, 3.000,
+                                  4.000, 5.000, 6.000, 500.000], labels=['0 to 0.167', '0.167 to 0.2',
+                                                                         '0.2 to 0.25', '0.25 to 0.33',
+                                                                         '0.33 to 0.5', '0.5 to 0.8',
+                                                                         '0.8 to 1.25', '1.25 to 2',
+                                                                         '2 to 3', '3 to 4', '4 to 5',
+                                                                         '5 to 6', '6 to 500']))
+    fre = fre.groupby(["bins", "DRUG"], as_index=False).sum()
+    # fig = px.violin(df, y="IC025", color="Sex", violinmode='overlay')
+    fig = px.histogram(df_m, x="IC025", color="Sex")
+    fig.update_layout(barmode='overlay')
+    fig.show()
+
+
 if __name__ == '__main__':
-    main()
+    main_v1()
