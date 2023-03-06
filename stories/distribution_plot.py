@@ -13,10 +13,10 @@ colors_d = {'alprazolam': '#FF5733', 'diazepam': '#75A7AB', 'lorazepam': '#B73C2
             'zolpidem': '#9DF8DF', 'tetrazepam': '#ff9d5c', 'cloxazolam': '#4b4c07', 'clotiazepam': '#e9fe92',
             'flumazenil': '#D6DA03', 'triazulenone': '#FFD4EB', 'quazepam': '#F9C469', 'nordazepam': '#68D6DF',
             'tofisopam': '#C3C553', 'mexazolam': '#BEFC8B', 'medazepam': '#27FFC4', 'ketazolam': '#636161',
-            'cinolazepam': '#C5A9A3', 'oxazolam': '#5FB815', 'lormetazepam': '#66953E', 'prazepam': '#FF0087',
+            'cinolazepam': '#C5A9A3', 'oxazolam': '#5FB815', 'lormetazepam': '#ee99ac', 'prazepam': '#FF0087',
             'flunitrazepam': '#FB11FF', 'nitrazepam': '#E49C20', 'estazolam': '#8E3564', 'ethyl loflazepate': '#FBB4FC',
             'etizolam': '#0CC492', 'brotizolam': '#B498FF', 'clorazepate': '#0CC44C', 'triazolam': '#1349C4',
-            'chlordiazepoxide': '#4a8c12', 'flurazepam': '#75AB9C', 'zaleplon': '#18E4F5', 'eszopiclone': '#00B9FF',
+            'chlordiazepoxide': '#dfcfe9', 'flurazepam': '#75AB9C', 'zaleplon': '#18E4F5', 'eszopiclone': '#00B9FF',
             'temazepam': '#82F721', 'zopiclone': '#458AA4', 'bromazepam': '#4562A4', 'oxazepam': '#A585C4',
             'clobazam': '#2C6CFF', 'midazolam': '#98B7FF', 'remimazolam': '#8000FF'}
 symbols_d = {'alprazolam': "/", 'diazepam': ".", 'lorazepam': "x", 'clonazepam': "-",
@@ -51,8 +51,8 @@ symbols = {'alprazolam': 'circle', 'diazepam': 'hexagon', 'lorazepam': 'star', '
 
 
 def main_copy():
-    # path = 'C:\\Users\\TARIQOPLATA\PycharmProjects\\FAERS_final\\data\\data\\Old_gold\\'
-    path = '/Users/ftk/Documents/Work/FAERS_final/data/Old_gold/'
+    path = 'C:\\Users\\TARIQOPLATA\PycharmProjects\\FAERS_final\\data\\data\\Old_gold\\'
+    #path = '/Users/ftk/Documents/Work/FAERS_final/data/Old_gold/'
     df_f = pd.read_csv(path + 'Disprop_analysis_female_with_HTs.csv')
     df_m = pd.read_csv(path + 'Disprop_analysis_male_with_HTs.csv')
     hts = ['nervous system disorders', 'psychiatric disorders']
@@ -144,7 +144,6 @@ def main_copy():
         yaxis_title="Sum of IC025 per AE in ratio range"
     )
     fig.show()
-
     """
     #fig.write_html('Sumofdrugreportsinbin_' + ht + '.html')
     fig = px.bar(fre_count_counts, x='bins', y='Count', color='DRUG', title="Counts of drug reports in bin")
@@ -171,8 +170,8 @@ def main_copy():
 
 
 def main_v1():
-    # path = 'C:\\Users\\TARIQOPLATA\PycharmProjects\\FAERS_final\\data\\data\\Old_gold\\'
-    path = '/Users/ftk/Documents/Work/FAERS_final/data/Old_gold/'
+    path = 'C:\\Users\\TARIQOPLATA\PycharmProjects\\FAERS_final\\data\\data\\Old_gold\\'
+    #path = '/Users/ftk/Documents/Work/FAERS_final/data/Old_gold/'
     df_f = pd.read_csv(path + 'Disprop_analysis_female_with_HTs.csv')
     df_m = pd.read_csv(path + 'Disprop_analysis_male_with_HTs.csv')
     hts = ['nervous system disorders', 'psychiatric disorders']
@@ -205,9 +204,17 @@ def main_v1():
                                    ignore_index=True)
     total_df = total_df.sort_values('DRUG', ascending=True)
     # total_df.to_csv('Distributions.csv')
+    df_part = total_df[(total_df['Ratio'] < 0.5) | (total_df['Ratio'] > 2)]
 
-    fig = px.scatter(total_df, x="IC025_f", y="IC025_m", color="DRUG", hover_data=['AE'], symbol_map=symbols,
-                     symbol="DRUG", trendline="ols", trendline_scope="overall", trendline_color_override="black")
+    fig_fin = go.Figure()
+
+    fig = px.scatter(df_part, x="IC025_f", y="IC025_m", color="DRUG", hover_data=['AE', 'Ratio', 'Count'],
+                     symbol_map=symbols, symbol="DRUG", opacity=1.0, height=1200, width=1200)
+    fig.update_layout(showlegend=False)
+    fig.update_yaxes(range=[-0.1, 7])
+    fig.update_xaxes(range=[-0.1, 7])
+    fig.update_traces(marker={'size': 8})
+    fig.update_layout(font=dict(size=18))
     fig.show()
 
     df_m2 = total_df.groupby(['AE', 'DRUG'], as_index=False).sum()
@@ -215,33 +222,61 @@ def main_v1():
     df_fx = df_m2[df_m2['IC025_f'] == 0.0]
     df_fx = df_fx.sort_values('IC025_m', ascending=False)
     df_fx = df_fx.drop_duplicates(subset=['DRUG', 'AE', 'IC025_m'], keep='first', ignore_index=True)
-    df_fx = df_fx.head(20)
+    df_fx = df_fx.head(40)
+    print("PART 1")
+    print(df_fx)
     df_f_aes = df_fx['AE'].tolist()
     df_f_drug = df_fx['DRUG'].tolist()
     df_fx = total_df.loc[total_df['AE'].isin(df_f_aes) & total_df['DRUG'].isin(df_f_drug)]
     df_fx = df_fx.drop_duplicates(subset=['DRUG', 'AE', 'IC025_m'], keep='first', ignore_index=True)
     df_fx = df_fx.sort_values('IC025_m', ascending=False)
+    df_fx = df_fx.head(25)
+    print("PART 2")
     print(df_fx)
+    fig2 = px.bar(df_fx, x="IC025_m", y="AE", title="Top 10 male AEs", color="DRUG", color_discrete_map=colors_d,
+                  orientation='h')
+    fig2.update_layout(barmode='stack', xaxis={'categoryorder' : 'total ascending'}, yaxis={'categoryorder' : 'total ascending'})
+    fig2.show()
 
     df_mx = df_m2[df_m2['IC025_m'] == 0.0]
     df_mx = df_mx.sort_values('IC025_f', ascending=False)
     df_mx = df_mx.drop_duplicates(subset=['DRUG', 'AE', 'IC025_f'], keep='first', ignore_index=True)
-    df_mx = df_mx.head(20)
+    df_mx = df_mx.head(40)
     df_m_aes = df_mx['AE'].tolist()
     df_m_drug = df_mx['DRUG'].tolist()
     df_mx = total_df.loc[total_df['AE'].isin(df_m_aes) & total_df['DRUG'].isin(df_m_drug)]
     df_mx = df_mx.drop_duplicates(subset=['DRUG', 'AE', 'IC025_f'], keep='first', ignore_index=True)
     df_mx = df_mx.sort_values('IC025_f', ascending=False)
-    print(df_mx)
-
-    fig2 = px.bar(df_fx, x="IC025_m", y="AE", title="Top 10 male AEs", color="DRUG", color_discrete_map=colors_d,
-                  orientation='h')
-    fig.update_xaxes(tickangle=90)
-    fig2.show()
-
+    df_mx = df_mx.head(23)
     fig3 = px.bar(df_mx, x="AE", y="IC025_f", title="Top 10 female AEs", color="DRUG", color_discrete_map=colors_d)
-    fig.update_xaxes(tickangle=90)
+    fig3.update_layout(barmode='stack', xaxis={'categoryorder': 'total descending'}, yaxis={'categoryorder': 'total descending'})
     fig3.show()
+
+
+    df_big = total_df[total_df['Ratio'] < 0.5]
+    df_small = total_df[total_df['Ratio'] > 2]
+
+    df_big = df_big.groupby(['AE'], as_index=False).sum()
+    df_big = df_big.sort_values(['IC025_m'], ascending=False)
+    #print(df_big)
+    df_big = df_big.head(20)
+    fig4 = px.bar(df_big, x="AE", y="IC025_m", title="Top 10 male DRUGS from < 0.5", color="AE",
+                  color_discrete_map=colors_d, width=2100, height=700)
+    fig4.update_xaxes(categoryorder='max descending')
+    fig4.update_xaxes(tickangle=90)
+    fig4.show()
+
+    df_small = df_small.groupby(['AE'], as_index=False).sum()
+    df_small = df_small.sort_values(['IC025_f'], ascending=False)
+    df_small = df_small.head(20)
+    print(df_small)
+    fig5 = px.bar(df_small, x="AE", y="IC025_f", title="Top 10 female DRUGS", color="AE",
+                  color_discrete_map=colors_d, width=2100, height=700)
+    fig5.update_xaxes(categoryorder='max descending')
+    fig5.update_xaxes(tickangle=90)
+    fig5.show()
+
+
 
     # df_m1 = total_df[total_df['IC025_f'] != '0.0']
     # df_f1 = total_df[total_df['IC025_m'] != '0.0']
@@ -313,8 +348,8 @@ def main_v1():
 
 
 def main():
-    # path = 'C:\\Users\\TARIQOPLATA\PycharmProjects\\FAERS_final\\data\\data\\Old_gold\\'
-    path = '/Users/ftk/Documents/Work/FAERS_final/data/Old_gold/'
+    path = 'C:\\Users\\TARIQOPLATA\PycharmProjects\\FAERS_final\\data\\data\\Old_gold\\'
+    #path = '/Users/ftk/Documents/Work/FAERS_final/data/Old_gold/'
     df_f = pd.read_csv(path + 'Disprop_analysis_female_with_HTs.csv')
     df_m = pd.read_csv(path + 'Disprop_analysis_male_with_HTs.csv')
     hts = ['nervous system disorders', 'psychiatric disorders']
