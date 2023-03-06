@@ -72,8 +72,8 @@ symbols = {'alprazolam': 'circle', 'diazepam': 'hexagon', 'lorazepam': 'star', '
            'temazepam': 'bowtie-open', 'zopiclone': 'asterisk-open', 'bromazepam': 'triangle-right-open',
            'oxazepam': 'hexagon2-open', 'clobazam': 'triangle-se', 'triangle-sw': 'hash', 'remimazolam': 'diamond-open'}
 
-path = 'C:\\Users\\TARIQOPLATA\\PycharmProjects\\FAERS_final\\'
-#path = '/Users/ftk/Documents/Work/FAERS_final/'
+#path = 'C:\\Users\\TARIQOPLATA\\PycharmProjects\\FAERS_final\\'
+path = '/Users/ftk/Documents/Work/FAERS_final/'
 
 
 def bar_chart(df):
@@ -205,8 +205,8 @@ def Setcolor(x):
 
 
 def create_scatter():
-    path2 = 'data\\data\\Old_gold\\'
-    #path2 = 'data/Old_gold/'
+    #path2 = 'data\\data\\Old_gold\\'
+    path2 = 'data/Old_gold/'
     #df_f = pd.read_csv(path + path2 + 'Disprop_analysis_female_with_HTs.csv')
     #df_m = pd.read_csv(path + path2 + 'Disprop_analysis_male_with_HTs.csv')
     df_f = pd.read_csv(path + path2 + 'Disprop_analysis_female_with_HTs_before_filtering_v2.csv')
@@ -222,13 +222,16 @@ def create_scatter():
     df_m1['Sex'] = 'M'
     frames = [df_f1, df_m1]
     df = pd.concat(frames)
+    df = df.drop(df[df.AE == 'agitation neonatal'].index)
+    df = df.drop(df[df.AE == 'foetal alcohol syndrome'].index)
+    #df = df.drop(df[df.score < 50].index)
     print(df)
     scatter(df)
 
 
 def create_bar():
-    path2 = 'data\\data\\Old_gold\\'
-    #path2 = 'data/Old_gold/'
+    #path2 = 'data\\data\\Old_gold\\'
+    path2 = 'data/Old_gold/'
     df_f_old = pd.read_csv(path + path2 + 'Disprop_analysis_female_with_HTs_before_filtering_v2.csv')
     df_m_old = pd.read_csv(path + path2 + 'Disprop_analysis_male_with_HTs_before_filtering_v2.csv')
     hts = ['psychiatric disorders', 'nervous system disorders']
