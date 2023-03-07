@@ -92,7 +92,7 @@ symbols = {'alprazolam': 'circle', 'diazepam': 'hexagon', 'lorazepam': 'star', '
 
 def main_copy():
     path = 'C:\\Users\\TARIQOPLATA\PycharmProjects\\FAERS_final\\data\\data\\Old_gold\\'
-    # path = '/Users/ftk/Documents/Work/FAERS_final/data/Old_gold/'
+    #path = '/Users/ftk/Documents/Work/FAERS_final/data/Old_gold/'
     df_f = pd.read_csv(path + 'Disprop_analysis_female_with_HTs.csv')
     df_m = pd.read_csv(path + 'Disprop_analysis_male_with_HTs.csv')
     hts = ['nervous system disorders', 'psychiatric disorders']
@@ -224,14 +224,23 @@ def Setshape(x):
 
 def fin_scatter(df_part, df_part2):
     fig = go.Figure()
-    # symbol_map=symbols, symbol="DRUG", color="DRUG"
-    fig.add_trace(go.Scatter(x=df_part['IC025_f'], y=df_part['IC025_m'], showlegend=True, mode='markers',
-                             marker=dict(color=list(map(Setcolor_full, df_part['DRUG'])),
-                                         symbol=list(map(Setshape, df_part['DRUG'])))))
-    fig.add_trace(go.Scatter(x=df_part2['IC025_f'], y=df_part2['IC025_m'], showlegend=False, mode='markers',
-                             marker=dict(color=list(map(Setcolor_opa, df_part2['DRUG'])),
-                                         symbol=list(map(Setshape, df_part2['DRUG'])))))
-    fig.update_layout(showlegend=False)
+    drugs = df_part["DRUG"].tolist() + df_part2["DRUG"].tolist()
+    drugs = list(dict.fromkeys(drugs))
+
+    for item in drugs:
+        df_part_d = df_part[df_part["DRUG"] == item]
+        df_part2_d = df_part2[df_part2["DRUG"] == item]
+
+        fig.add_trace(go.Scatter(x=df_part_d['IC025_f'], y=df_part_d['IC025_m'], showlegend=True, mode='markers',
+                                 name=item,
+                                 marker=dict(color=list(map(Setcolor_full, df_part_d['DRUG'])),
+                                             symbol=list(map(Setshape, df_part_d['DRUG'])))))
+        fig.add_trace(go.Scatter(x=df_part2_d['IC025_f'], y=df_part2_d['IC025_m'], showlegend=False, mode='markers',
+                                 name=item,
+                                 marker=dict(color=list(map(Setcolor_opa, df_part2_d['DRUG'])),
+                                             symbol=list(map(Setshape, df_part2_d['DRUG'])))))
+
+    fig.update_layout(showlegend=True)
     fig.update_yaxes(range=[-0.1, 7])
     fig.update_xaxes(range=[-0.1, 7])
     fig.update_traces(marker={'size': 8})
@@ -240,8 +249,8 @@ def fin_scatter(df_part, df_part2):
 
 
 def main_v1():
-    # path = 'C:\\Users\\TARIQOPLATA\PycharmProjects\\FAERS_final\\data\\data\\Old_gold\\'
-    path = '/Users/ftk/Documents/Work/FAERS_final/data/Old_gold/'
+    path = 'C:\\Users\\TARIQOPLATA\PycharmProjects\\FAERS_final\\data\\data\\Old_gold\\'
+    #path = '/Users/ftk/Documents/Work/FAERS_final/data/Old_gold/'
     df_f = pd.read_csv(path + 'Disprop_analysis_female_with_HTs.csv')
     df_m = pd.read_csv(path + 'Disprop_analysis_male_with_HTs.csv')
     hts = ['nervous system disorders', 'psychiatric disorders']
@@ -302,7 +311,7 @@ def main_v1():
     male_part3 = male_part[male_part['AE'].isin(males_aes)]
     print(male_part2)
     fig5 = px.bar(male_part3, x="AE", y="IC025_m", title="Top 10 male AEs", color="DRUG",
-                  color_discrete_map=colors_d)
+                  color_discrete_map=colors_d, pattern_shape="DRUG", pattern_shape_map=symbols_d)
     fig5.update_layout(barmode='stack', xaxis={'categoryorder': 'total descending'},
                        yaxis={'categoryorder': 'total descending'})
     #fig5.update_xaxes(tickangle=90)
@@ -320,8 +329,8 @@ def main_v1():
     females_aes = female_part2['AE'].tolist()
     female_part3 = female_part[female_part['AE'].isin(females_aes)]
     print(female_part2)
-    fig6 = px.bar(female_part3, x="AE", y="IC025_m", title="Top 10 female AEs", color="DRUG",
-                  color_discrete_map=colors_d)
+    fig6 = px.bar(female_part3, x="AE", y="IC025_f", title="Top 10 female AEs", color="DRUG",
+                  color_discrete_map=colors_d, pattern_shape="DRUG", pattern_shape_map=symbols_d)
     fig6.update_layout(barmode='stack', xaxis={'categoryorder': 'total descending'},
                        yaxis={'categoryorder': 'total descending'})
     #fig6.update_xaxes(tickangle=90)
