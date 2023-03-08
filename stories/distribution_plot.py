@@ -311,7 +311,7 @@ def main_v1():
     male_part3 = male_part[male_part['AE'].isin(males_aes)]
     print(male_part2)
     fig5 = px.bar(male_part3, x="AE", y="IC025_m", title="Top 10 male AEs", color="DRUG",
-                  color_discrete_map=colors_d, pattern_shape="DRUG", pattern_shape_map=symbols_d)
+                  color_discrete_map=colors_d)
     fig5.update_layout(barmode='stack', xaxis={'categoryorder': 'total descending'},
                        yaxis={'categoryorder': 'total descending'})
     #fig5.update_xaxes(tickangle=90)
@@ -330,17 +330,24 @@ def main_v1():
     female_part3 = female_part[female_part['AE'].isin(females_aes)]
     print(female_part2)
     fig6 = px.bar(female_part3, x="AE", y="IC025_f", title="Top 10 female AEs", color="DRUG",
-                  color_discrete_map=colors_d, pattern_shape="DRUG", pattern_shape_map=symbols_d)
+                  color_discrete_map=colors_d)
     fig6.update_layout(barmode='stack', xaxis={'categoryorder': 'total descending'},
                        yaxis={'categoryorder': 'total descending'})
-    #fig6.update_xaxes(tickangle=90)
     fig6.show()
 
+    aes = ['restlessness', 'mania', 'hypomania', 'logorrhoea', 'psychotic behaviour']
+    male_part3 = male_part3[male_part3['AE'].isin(aes)]
+    figX = px.pie(male_part3, values="IC025_m", names='DRUG', title="MALES")
+    figX.show()
 
-    fig = px.scatter(male_part, x="IC025_f", y="IC025_m", color="DRUG", hover_data=['AE', 'Ratio', 'Count'],
-                     symbol_map=symbols, symbol="DRUG", opacity=1.0, height=1200, width=1200, title='Male')
+    aes = ['psychomotor hyperactivity', 'impulsive behaviour']
+    female_part3 = female_part3[female_part3['AE'].isin(aes)]
+    figX = px.pie(female_part3, values="IC025_f", names='DRUG', title="FEMALES")
+    figX.show()
+
+    #fig = px.scatter(male_part, x="IC025_f", y="IC025_m", color="DRUG", hover_data=['AE', 'Ratio', 'Count'],
+    #                 symbol_map=symbols, symbol="DRUG", opacity=1.0, height=1200, width=1200, title='Male')
     #fig.show()
-
     # fig = px.scatter(df_part, x="IC025_f", y="IC025_m", color="DRUG", hover_data=['AE', 'Ratio', 'Count'],
     #                 symbol_map=symbols, symbol="DRUG", opacity=1.0, height=1200, width=1200)
     # fig.update_layout(showlegend=False)
