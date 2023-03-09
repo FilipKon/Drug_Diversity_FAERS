@@ -191,7 +191,7 @@ def create_hglts_v1():
     # path = '/Users/ftk/Documents/Work/FAERS_final/data/Old_gold/'
     df_f = pd.read_csv(path + 'Disprop_analysis_female_with_HTs.csv')
     df_m = pd.read_csv(path + 'Disprop_analysis_male_with_HTs.csv')
-    hts = ['anxiety disorders and symptoms']
+    hts = ['haematology investigations (incl blood groups)', 'toxicology and therapeutic drug monitoring', 'cardiac and vascular investigations (excl enzyme tests)']
     #'suicidal and self-injurious behaviours nec',
     #       'sleep disorders and disturbances', 'psychiatric disorders nec'
     # 'sleep disturbances (incl subtypes)' SLEEPS PUT TOGETHER
@@ -262,9 +262,8 @@ def main_v1():
     df_m = pd.read_csv(path + 'Disprop_analysis_male_with_HTs.csv')
     hts = ['psychiatric disorders nec', 'suicidal and self-injurious behaviours nec', 'anxiety disorders and symptoms',
            'sleep disorders and disturbances', 'sleep disturbances (incl subtypes)']
-        #, 'suicidal and self-injurious behaviours nec',
-        #   'sleep disorders and disturbances', 'psychiatric disorders nec']
-    # 'sleep disturbances (incl subtypes)' SLEEPS PUT TOGETHER
+    hts = ['haematology investigations (incl blood groups)', 'toxicology and therapeutic drug monitoring',
+           'cardiac and vascular investigations (excl enzyme tests)']
     df_f = df_f[df_f['HT_level2'].isin(hts)]
     df_m = df_m[df_m['HT_level2'].isin(hts)]
 
@@ -419,4 +418,4 @@ def neuro_nec():
 
 
 if __name__ == '__main__':
-    neuro_nec()
+    main_v1()

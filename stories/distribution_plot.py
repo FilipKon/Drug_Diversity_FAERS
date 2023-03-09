@@ -337,13 +337,21 @@ def main_v1():
 
     aes = ['restlessness', 'mania', 'hypomania', 'logorrhoea', 'psychotic behaviour']
     male_part3 = male_part3[male_part3['AE'].isin(aes)]
-    figX = px.pie(male_part3, values="IC025_m", names='DRUG', title="MALES")
+    figX = px.pie(male_part3, values="IC025_m", names='DRUG', title="MALES", color_discrete_map=colors_d_full,
+                  color="DRUG")
+    figX.update_traces(textposition='inside', textinfo='percent+label', textfont_size=20, hole=.3,
+                       title='MALE')
     figX.show()
 
     aes = ['psychomotor hyperactivity', 'impulsive behaviour']
     female_part3 = female_part3[female_part3['AE'].isin(aes)]
-    figX = px.pie(female_part3, values="IC025_f", names='DRUG', title="FEMALES")
+    figX = px.pie(female_part3, values="IC025_f", names='DRUG', title="FEMALES", color_discrete_map=colors_d_full,
+                  color="DRUG")
+    figX.update_traces(textposition='inside', textinfo='percent+label', textfont_size=20, hole=.3,
+                       title='FEMALE')
     figX.show()
+
+
 
     #fig = px.scatter(male_part, x="IC025_f", y="IC025_m", color="DRUG", hover_data=['AE', 'Ratio', 'Count'],
     #                 symbol_map=symbols, symbol="DRUG", opacity=1.0, height=1200, width=1200, title='Male')

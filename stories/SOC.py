@@ -1,7 +1,7 @@
 import pandas as pd
 import plotly.express as px
 import plotly.graph_objects as go
-#import settings
+# import settings
 import warnings
 
 warnings.filterwarnings("ignore")
@@ -30,15 +30,16 @@ colors_d = {'alprazolam': '#FF5733', 'diazepam': '#75A7AB', 'lorazepam': '#B73C2
             'clobazam': '#2C6CFF', 'midazolam': '#98B7FF', 'remimazolam': '#8000FF'}
 
 path = 'C:\\Users\\TARIQOPLATA\\PycharmProjects\\FAERS_final\\'
-#path = '/Users/ftk/Documents/Work/FAERS_final'
+# path = '/Users/ftk/Documents/Work/FAERS_final'
 colors_g = {'F': '#e5a2bd', 'M': '#9aceeb'}
 
 
 def reports_perc(df, ht2):
     print(df.columns)
     dfx = df.sort_values(['DRUG'], ascending=False, ignore_index=True, kind="mergesort")
-    #dfx = df['DRUG'].sort_values(ascending=False, ignore_index=True, kind="mergesort")
-    figBAR = px.bar(dfx, x="Reports_Percent", y="DRUG", color='Sex', barmode='group', color_discrete_map=settings.colors_g,
+    # dfx = df['DRUG'].sort_values(ascending=False, ignore_index=True, kind="mergesort")
+    figBAR = px.bar(dfx, x="Reports_Percent", y="DRUG", color='Sex', barmode='group',
+                    color_discrete_map=settings.colors_g,
                     title=ht2, orientation='h', hover_data=['AE'])
     figBAR.show()
     figBAR.write_html(path + 'psychiatricdisordersnec.html')
@@ -73,7 +74,7 @@ def get_percs():
                                 'Reports_Percent': ae_perc, 'IC025': row['IC025'],
                                 'Total_Reports': df_sub_drug['Reports'].values[0]},
                                ignore_index=True)
-    #print(df_fin)
+    # print(df_fin)
     df_fin['DRUG'] = df_fin["DRUG"].map(str)
     reports_perc(df_fin, 'psychiatric disorders nec')
 
@@ -95,8 +96,9 @@ def get_drug_totals(df):
             else:
                 ic025_sum = df_x2['IC025'].sum()
                 reports = df_x2['Reports'].sum()
-            df_g = df_g.append({'DRUG': item, 'HTLGT': element, 'IC025_sum': ic025_sum, 'Reports_sum': reports, 'Sex': 'M'},
-                               ignore_index=True)
+            df_g = df_g.append(
+                {'DRUG': item, 'HTLGT': element, 'IC025_sum': ic025_sum, 'Reports_sum': reports, 'Sex': 'M'},
+                ignore_index=True)
     for item in drugs:
         df_x = df[df['Sex'] == 'F']
         df_x = df_x[df_x['DRUG'] == item]
@@ -206,18 +208,18 @@ def main():
         polar=dict(
             radialaxis=dict(
                 visible=True,
-                #range=[0, 5]
+                # range=[0, 5]
             )),
         showlegend=True
     )
     fig.show()
-    #get_drug_totals(df)
+    # get_drug_totals(df)
 
 
 def new_radar_fig2(drugies, df, hts, gender):
     fig = go.Figure()
     i = 0
-    #print(drugies)
+    # print(drugies)
     for item in hts:
         df_mX = df[df['HTLGT'] == item]
         drug_list = df['DRUG'].tolist()
@@ -238,14 +240,14 @@ def new_radar_fig2(drugies, df, hts, gender):
                 j += 1
             i += 1
         fig.add_trace(go.Barpolar(
-            #r = df_X['IC025'].tolist(),
-            #theta = df_X['HT_2'].tolist(),
+            # r = df_X['IC025'].tolist(),
+            # theta = df_X['HT_2'].tolist(),
             r=ic025s,
             theta=drugies,
             name=item,
-            #legendrank=drugs_alpha.get(item),
-            #marker=dict(pattern=dict(shape=symbols_d.get(item), fillmode='overlay', bgcolor=colors_d.get(item)))
-            ))
+            # legendrank=drugs_alpha.get(item),
+            # marker=dict(pattern=dict(shape=symbols_d.get(item), fillmode='overlay', bgcolor=colors_d.get(item)))
+        ))
         fig.update_traces(text=df_mX['IC025_sum'].tolist())
     fig.update_layout(
         polar=dict(
@@ -270,21 +272,35 @@ def fig4_overview():
     df_m = pd.read_csv(path + '\\data\\data\\Old_gold\\Disprop_analysis_male_with_HTs.csv')
     df_m['Sex'] = 'M'
     df_f['Sex'] = 'F'
+    df_m = df_m[df_m['DRUG'] == 'nordazepam']
+    df_f = df_f[df_f['DRUG'] == 'nordazepam']
+    hts = ['psychiatric disorders', 'nervous system disorders']
+    df_m = df_m[df_m['HT'].isin(hts)]
+    df_f = df_f[df_f['HT'].isin(hts)]
     frames = [df_f, df_m]
     df = pd.concat(frames)
-    df = df.groupby(['HT', 'Sex'], as_index=False).sum()
+    #df = df.groupby(['AE', 'Sex', 'DRUG'], as_index=False).sum()
+    df = df.drop_duplicates(subset=['DRUG', 'AE', 'IC025'], keep='first')
     df = df.sort_values(['IC025'], ascending=False)
-    fig1 = px.bar(df, x="HT", y="IC025", color='Sex', barmode='group', color_discrete_map=colors_g)
+    df2 = df.head(23)
+    df_aes = df2['AE'].tolist()
+    df2 = df[df['AE'].isin(df_aes)]
+    df2 = df2.drop_duplicates(subset=['DRUG', 'AE', 'IC025'], keep='first')
+    df2 = df2.sort_values(['IC025'], ascending=False)
+    fig1 = px.bar(df2, x="AE", y="IC025", color='Sex', barmode='group', color_discrete_map=colors_g)
+    #fig1.update_xaxes(categoryorder='max descending')
+    fig1.update_yaxes(categoryorder='total descending')
     fig1.update_layout(
-        xaxis_title="System Organ Classes (SOCs)",
-        yaxis_title="cIC025",
+        xaxis_title="Adverse Events (AEs)",
+        yaxis_title="IC025",
         legend_title="Sex",
+        title='Nordazepam',
         font=dict(
             size=18,
         )
     )
     fig1.show()
-    
-    
+
+
 if __name__ == '__main__':
-    main()
+    fig4_overview()

@@ -205,12 +205,12 @@ def Setcolor(x):
 
 
 def create_scatter():
-    #path2 = 'data\\data\\Old_gold\\'
-    path2 = 'data/Old_gold/'
-    #df_f = pd.read_csv(path + path2 + 'Disprop_analysis_female_with_HTs.csv')
-    #df_m = pd.read_csv(path + path2 + 'Disprop_analysis_male_with_HTs.csv')
-    df_f = pd.read_csv(path + path2 + 'Disprop_analysis_female_with_HTs_before_filtering_v2.csv')
-    df_m = pd.read_csv(path + path2 + 'Disprop_analysis_male_with_HTs_before_filtering_v2.csv')
+    path2 = 'data\\data\\Old_gold\\'
+    #path2 = 'data/Old_gold/'
+    df_f = pd.read_csv(path + path2 + 'Disprop_analysis_female_with_HTs.csv')
+    df_m = pd.read_csv(path + path2 + 'Disprop_analysis_male_with_HTs.csv')
+    #df_f = pd.read_csv(path + path2 + 'Disprop_analysis_female_with_HTs_before_filtering_v2.csv')
+    #df_m = pd.read_csv(path + path2 + 'Disprop_analysis_male_with_HTs_before_filtering_v2.csv')
 
     hts = ['psychiatric disorders', 'nervous system disorders']
     drug = ['zopiclone', 'eszopiclone']
@@ -288,10 +288,6 @@ def find_max(df):
 
 def main():
     create_scatter()
-    # drug_totals = pd.read_csv(path + 'data/New/Drugs_Gender_Size.csv')
-
-    # df_m1_old = df_m_old[df_m_old['DRUG'].isin(drug)]
-    # df_f1_old = df_f_old[df_f_old['DRUG'].isin(drug)]
     """
     drug_totals = drug_totals[drug_totals['DRUG'].isin(drug)]
 
