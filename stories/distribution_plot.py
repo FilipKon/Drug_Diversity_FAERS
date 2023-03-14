@@ -233,10 +233,14 @@ def fin_scatter(df_part, df_part2):
 
         fig.add_trace(go.Scatter(x=df_part_d['IC025_f'], y=df_part_d['IC025_m'], showlegend=True, mode='markers',
                                  name=item,
+                                 hovertemplate=df_part_d["AE"],
+                                 #hoverinfo="text",
                                  marker=dict(color=list(map(Setcolor_full, df_part_d['DRUG'])),
                                              symbol=list(map(Setshape, df_part_d['DRUG'])))))
-        fig.add_trace(go.Scatter(x=df_part2_d['IC025_f'], y=df_part2_d['IC025_m'], showlegend=False, mode='markers',
+        fig.add_trace(go.Scatter(x=df_part2_d['IC025_f'], y=df_part2_d['IC025_m'], showlegend=True, mode='markers',
                                  name=item,
+                                 hovertemplate=df_part2_d["AE"],
+                                 #hoverinfo="text",
                                  marker=dict(color=list(map(Setcolor_opa, df_part2_d['DRUG'])),
                                              symbol=list(map(Setshape, df_part2_d['DRUG'])))))
 
@@ -246,6 +250,7 @@ def fin_scatter(df_part, df_part2):
     fig.update_traces(marker={'size': 8})
     fig.update_layout(font=dict(size=18), height=1200, width=1200)
     fig.show()
+    #fig.write_html("Figure_8A_v2.html")
 
 
 def main_v1():
@@ -296,7 +301,39 @@ def main_v1():
     df_part2 = df_part2.drop(df_part2[df_part2.IC025_m == 0.00].index)
     df_part2 = df_part2.drop_duplicates(subset=['DRUG', 'AE', 'Ratio', 'IC025_m', 'IC025_f'], keep='first',
                                         ignore_index=True)
-    fin_scatter(df_part, df_part2)
+    #fin_scatter(df_part, df_part2)
+
+    # SHOW THE TOP 20 AEs for each sex only axis == 0
+    # MALE
+    df_axis1 = total_df[total_df['IC025_f'] == 0.0]
+    male_part = df_axis1.drop_duplicates(subset=['DRUG', 'AE', 'Ratio', 'IC025_m', 'IC025_f'], keep='first',
+                                          ignore_index=True)
+    male_part2 = male_part.groupby(['AE'], as_index=False).sum()
+    male_part2 = male_part2.sort_values(['IC025_m'], ascending=False)
+    male_part2 = male_part2.head(20)
+    males_aes = male_part2['AE'].tolist()
+    male_part3 = male_part[male_part['AE'].isin(males_aes)]
+    fig5 = px.bar(male_part3, x="AE", y="IC025_m", title="Top 10 male AEs", color="DRUG",
+                  color_discrete_map=colors_d)
+    fig5.update_layout(barmode='stack', xaxis={'categoryorder': 'total descending'},
+                       yaxis={'categoryorder': 'total descending'})
+    fig5.show()
+
+    # FEMALE
+    df_axis1 = total_df[total_df['IC025_m'] == 0.0]
+    male_part = df_axis1.drop_duplicates(subset=['DRUG', 'AE', 'Ratio', 'IC025_m', 'IC025_f'], keep='first',
+                                          ignore_index=True)
+    male_part2 = male_part.groupby(['AE'], as_index=False).sum()
+    male_part2 = male_part2.sort_values(['IC025_f'], ascending=False)
+    male_part2 = male_part2.head(20)
+    males_aes = male_part2['AE'].tolist()
+    male_part3 = male_part[male_part['AE'].isin(males_aes)]
+    fig5 = px.bar(male_part3, x="AE", y="IC025_f", title="Top 10 female AEs", color="DRUG",
+                  color_discrete_map=colors_d)
+    fig5.update_layout(barmode='stack', xaxis={'categoryorder': 'total descending'},
+                       yaxis={'categoryorder': 'total descending'})
+    fig5.show()
+
 
     male_part = total_df[(total_df['Ratio'] < 0.5) | (total_df['IC025_m'] == 0.0)]
     male_part = male_part.drop(male_part[male_part.IC025_m == 0.00].index)
@@ -315,7 +352,7 @@ def main_v1():
     fig5.update_layout(barmode='stack', xaxis={'categoryorder': 'total descending'},
                        yaxis={'categoryorder': 'total descending'})
     #fig5.update_xaxes(tickangle=90)
-    fig5.show()
+    #fig5.show()
 
     female_part = total_df[(total_df['Ratio'] > 2) | (total_df['IC025_f'] == 0.0)]
     female_part = female_part.drop(female_part[female_part.IC025_f == 0.00].index)
@@ -333,7 +370,7 @@ def main_v1():
                   color_discrete_map=colors_d)
     fig6.update_layout(barmode='stack', xaxis={'categoryorder': 'total descending'},
                        yaxis={'categoryorder': 'total descending'})
-    fig6.show()
+    #fig6.show()
 
     aes = ['restlessness', 'mania', 'hypomania', 'logorrhoea', 'psychotic behaviour']
     male_part3 = male_part3[male_part3['AE'].isin(aes)]
@@ -341,7 +378,7 @@ def main_v1():
                   color="DRUG")
     figX.update_traces(textposition='inside', textinfo='percent+label', textfont_size=20, hole=.3,
                        title='MALE')
-    figX.show()
+    #figX.show()
 
     aes = ['psychomotor hyperactivity', 'impulsive behaviour']
     female_part3 = female_part3[female_part3['AE'].isin(aes)]
@@ -349,7 +386,7 @@ def main_v1():
                   color="DRUG")
     figX.update_traces(textposition='inside', textinfo='percent+label', textfont_size=20, hole=.3,
                        title='FEMALE')
-    figX.show()
+    #figX.show()
 
 
 
