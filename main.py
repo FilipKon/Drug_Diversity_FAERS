@@ -10,7 +10,7 @@ path = 'C:\\Users\\TARIQOPLATA\\PycharmProjects\\FAERS_final\\data\\data\\Old_go
 #path = '/Users/ftk/Documents/Work/FAERS_final/data/Old_gold/'
 
 
-def main():
+def main2():
     df_f = pd.read_csv(path + 'Disprop_analysis_female_with_HTs.csv')
     df_m = pd.read_csv(path + 'Disprop_analysis_male_with_HTs.csv')
     df_f = df_f.drop(df_f[df_f.Reports < 5].index)
@@ -49,6 +49,36 @@ def main():
     print(df_f)
     print(df_m)
 
+
+def bzds():
+    bzd = open('C:\\Users\\TARIQOPLATA\\PycharmProjects\\FAERS_BZD-Gender\\Benzos_list.txt', 'r')
+    bzd = bzd.readlines()
+    print(bzd)
+    benzo_list = []
+    for item in bzd:
+        if ';' in item:
+            items = item.split(';')
+            benzo_list.append(items[0].lower())
+        elif '\n' in item:
+            items = item[:-1]
+            benzo_list.append(items.lower())
+        else:
+            benzo_list.append(item.lower())
+    benzo_list = list(dict.fromkeys(benzo_list))
+    print(len(benzo_list))
+    print(benzo_list)
+    file = open('Benzodiazepine_list.txt', 'w')
+    for item in benzo_list:
+        txt = item + '\n'
+        file.write(txt)
+    file.close()
+
+
+def main():
+    df_f = pd.read_csv(path + 'Disprop_analysis_female_with_HTs.csv')
+    df_m = pd.read_csv(path + 'Disprop_analysis_male_with_HTs.csv')
+    print(df_f)
+    df_m.to_excel('FAERS_data_male.xlsx')
 
 
 if __name__ == '__main__':

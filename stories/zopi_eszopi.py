@@ -72,14 +72,18 @@ symbols = {'alprazolam': 'circle', 'diazepam': 'hexagon', 'lorazepam': 'star', '
            'temazepam': 'bowtie-open', 'zopiclone': 'asterisk-open', 'bromazepam': 'triangle-right-open',
            'oxazepam': 'hexagon2-open', 'clobazam': 'triangle-se', 'triangle-sw': 'hash', 'remimazolam': 'diamond-open'}
 
-#path = 'C:\\Users\\TARIQOPLATA\\PycharmProjects\\FAERS_final\\'
-path = '/Users/ftk/Documents/Work/FAERS_final/'
+path = 'C:\\Users\\TARIQOPLATA\\PycharmProjects\\FAERS_final\\'
+#path = '/Users/ftk/Documents/Work/FAERS_final/'
 
+drug_1 = 'midazolam'
+drug_2 = 'nordazepam'
+drug1 = 'midazolam'
+drug2 = 'nordazepam'
 
 def bar_chart(df):
     # df = df[df['Sex'] == 'M']
     fig = px.bar(df, x="AE", y="IC025", color='Sex', barmode='group', height=400, pattern_shape="DRUG",
-                 color_discrete_map=colors_g, pattern_shape_map={'zopiclone': '+', 'eszopiclone': '-'})
+                 color_discrete_map=colors_g, pattern_shape_map={'zolpidem': '+', 'clotiazepam': '-'})
     # ["+", "-"]
     fig.update_layout(
         font=dict(
@@ -100,9 +104,9 @@ def pie_chart(df, sex, drug):
     fig.show()
 
 
-def scatter(df):
-    fig_fin = make_subplots(rows=1, cols=2, subplot_titles=("Eszopiclone", "Zopiclone"))
-
+def scatter(df, drug1, drug2):
+    fig_fin = make_subplots(rows=1, cols=2, subplot_titles=(drug1, drug2))
+    #BROTIZOLAM, ETIZOLAM
     df = df.drop_duplicates(subset=['DRUG', 'AE', 'IC025', 'Reports', 'Sex'])
     df = df.drop('IDX', axis=1)
     df = df.drop('HT_level2', axis=1)
@@ -110,7 +114,7 @@ def scatter(df):
     #df = df.drop('HT_level3', axis=1)
     df = df.drop('IC', axis=1)
     df = df.drop('ROR', axis=1)
-    df_e = df[df['DRUG'] == 'eszopiclone']
+    df_e = df[df['DRUG'] == drug1]
     df_e = df_e.drop_duplicates(subset=['DRUG', 'AE'])
     df_e = df_e.sort_values(by=['IC025'], ascending=False)
     df_e = df_e.head(10)
@@ -118,14 +122,15 @@ def scatter(df):
     df_1 = df[df['AE'].isin(aes_1)]
     print(df_e)
 
-    fig = px.scatter(df_1, y="IC025", x="AE", color="Sex", symbol="DRUG", color_discrete_map=colors_g, title="Eszopiclone")
+    fig = px.scatter(df_1, y="IC025", x="AE", color="Sex", symbol="DRUG", color_discrete_map=colors_g,
+                     title=drug1)
 
     fig.update_traces(marker_size=15)
     fig.update_layout(yaxis_range=[0, 6])
     fig.update_xaxes(categoryorder='total descending')
     #fig.show()
 
-    df_z = df[df['DRUG'] == 'zopiclone']
+    df_z = df[df['DRUG'] == drug2]
     df_z = df_z.drop_duplicates(subset=['DRUG', 'AE'])
     df_z = df_z.sort_values(by=['IC025'], ascending=False)
     df_z = df_z.head(10)
@@ -133,7 +138,8 @@ def scatter(df):
     df_2 = df[df['AE'].isin(aes_1)]
     print(df_z)
 
-    fig2 = px.scatter(df_1, y="IC025", x="AE", color="Sex", symbol="DRUG", color_discrete_map=colors_g, title="Zopiclone")
+    fig2 = px.scatter(df_1, y="IC025", x="AE", color="Sex", symbol="DRUG", color_discrete_map=colors_g,
+                      title=drug2)
     fig2.update_traces(marker_size=15)
     fig2.update_layout(yaxis_range=[0, 6])
     fig2.update_xaxes(categoryorder='total descending')
@@ -148,17 +154,20 @@ def scatter(df):
             y=df_1["IC025"],
             x=df_1["AE"],
             mode='markers',
-            name='Eszopiclone',
+            name=drug1,
+            showlegend=True,
             marker=dict(color=list(map(Setcolor, df_1["Sex"])), symbol=list(map(Setshape, df_1["DRUG"])), size=15),
         ), row=1, col=1
         )
+    fig_fin.update_layout(showlegend=True)
     fig_fin.update_xaxes(categoryorder='max descending', row=1, col=1)
     fig_fin.add_trace(
         go.Scatter(
             y=df_2["IC025"],
             x=df_2["AE"],
-            #color="Sex",
             mode='markers',
+            name=drug2,
+            showlegend=True,
             marker=dict(color=list(map(Setcolor, df_2["Sex"])), symbol=list(map(Setshape, df_2["DRUG"])), size=15),
             ), row=1, col=2
         )
@@ -172,9 +181,7 @@ def scatter(df):
    #     autosize=False,
      #   width=4100,
      #   height=1000)
-
     fig_fin.show()
-
     # df2 = df.groupby(by=['AE'], as_index=False).sum()
     # df2 = df2.sort_values(by=['IC025'], ascending=False)
     # df2 = df2.head(20)
@@ -190,9 +197,9 @@ def scatter(df):
 
 
 def Setshape(x):
-    if x == "zopiclone":
+    if x == drug1:
         return "diamond"
-    elif x == "eszopiclone":
+    elif x == drug2:
         return "circle"
     return "arrow"
 
@@ -204,7 +211,7 @@ def Setcolor(x):
         return '#9aceeb'
 
 
-def create_scatter():
+def create_scatter(drug1, drug2):
     path2 = 'data\\data\\Old_gold\\'
     #path2 = 'data/Old_gold/'
     df_f = pd.read_csv(path + path2 + 'Disprop_analysis_female_with_HTs.csv')
@@ -213,7 +220,7 @@ def create_scatter():
     #df_m = pd.read_csv(path + path2 + 'Disprop_analysis_male_with_HTs_before_filtering_v2.csv')
 
     hts = ['psychiatric disorders', 'nervous system disorders']
-    drug = ['zopiclone', 'eszopiclone']
+    drug = [drug1, drug2]
     df_m1 = df_m[df_m['DRUG'].isin(drug)]
     df_f1 = df_f[df_f['DRUG'].isin(drug)]
     df_m1 = df_m1[df_m1['HT'].isin(hts)]
@@ -226,16 +233,16 @@ def create_scatter():
     df = df.drop(df[df.AE == 'foetal alcohol syndrome'].index)
     #df = df.drop(df[df.score < 50].index)
     print(df)
-    scatter(df)
+    scatter(df, drug1, drug2)
 
 
 def create_bar():
-    #path2 = 'data\\data\\Old_gold\\'
-    path2 = 'data/Old_gold/'
+    path2 = 'data\\data\\Old_gold\\'
+    #path2 = 'data/Old_gold/'
     df_f_old = pd.read_csv(path + path2 + 'Disprop_analysis_female_with_HTs_before_filtering_v2.csv')
     df_m_old = pd.read_csv(path + path2 + 'Disprop_analysis_male_with_HTs_before_filtering_v2.csv')
     hts = ['psychiatric disorders', 'nervous system disorders']
-    drug = ['zopiclone', 'eszopiclone']
+    drug = ['midazolam', 'flurazepam']
     df_m_old = df_m_old[df_m_old['DRUG'].isin(drug)]
     df_f_old = df_f_old[df_f_old['DRUG'].isin(drug)]
     df_m_old = df_m_old[df_m_old['HT'].isin(hts)]
@@ -260,8 +267,8 @@ def find_max(df):
     maxis = {}
     for item in aes:
         df_sub = df[df['AE'] == item]
-        df_zop = df_sub[df_sub['DRUG'] == 'zopiclone']
-        df_eszop = df_sub[df_sub['DRUG'] == 'eszopiclone']
+        df_zop = df_sub[df_sub['DRUG'] == 'brotizolam']
+        df_eszop = df_sub[df_sub['DRUG'] == 'etizolam']
         maxZop = df_zop['IC025'].max()
         maxEsz = df_eszop['IC025'].max()
         diff = abs(maxZop-maxEsz)
@@ -287,7 +294,7 @@ def find_max(df):
 
 
 def main():
-    create_scatter()
+    create_scatter(drug_1, drug_2)
     """
     drug_totals = drug_totals[drug_totals['DRUG'].isin(drug)]
 
