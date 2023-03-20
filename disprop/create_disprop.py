@@ -3,12 +3,9 @@ import numpy as np
 import warnings
 warnings.filterwarnings("ignore", category=FutureWarning)
 
-
-#IDX,DRUG,ADVERSE_EVENT,A,B,C,D,N
-
-def get_bpcn(a, b, c, d):
-    bpcn = np.log2(a)*(a+b+c+d)*(a+c)*(a+b)
-    return bpcn
+"""
+    Calculate IC, IC025, PRR and ROR values from the contingency tables for each sex
+"""
 
 
 def get_ic(a, b, c, d):
@@ -32,8 +29,8 @@ def get_ror(a, b, c, d):
     return ROR
   
 def main():
-    df_m = pd.read_csv('C:\\Users\\TARIQOPLATA\\PycharmProjects\\FAERS_BZD-Gender\\Disprop_G\\contingency_table_NEWESTOKE_M.csv')
-    df_f = pd.read_csv('C:\\Users\\TARIQOPLATA\\PycharmProjects\\FAERS_BZD-Gender\\Disprop_G\\contingency_table_NEWESTOKE_F.csv')
+    df_m = pd.read_csv('data/contingency_table_M.csv')
+    df_f = pd.read_csv('data/contingency_table_F.csv')
     dis_m = pd.DataFrame(columns=['DRUG', 'AE', 'IC', 'IC025', 'PRR', 'ROR', 'Reports'])
     dis_f = pd.DataFrame(columns=['DRUG', 'AE', 'IC', 'IC025', 'PRR', 'ROR', 'Reports'])
     i = 0
@@ -54,7 +51,7 @@ def main():
         if i == 1000:
             print(dis_m)
     print('MALE DONE')
-    dis_m.to_csv('Disproportionate_analysis_male_NEWNEW.csv')
+    dis_m.to_csv('Disproportionate_analysis_male.csv')
     for index, row in df_f.iterrows():
         if row['A'] == 0:
             continue
@@ -66,9 +63,8 @@ def main():
         #bpcn = get_bpcn(row['A'], row['B'], row['C'], row['D'])
         dis_f = dis_f.append({'DRUG': row['DRUG'], 'AE': row['AE'], 'IC': ic, 'IC025': ic025,
                               'PRR': prr, 'ROR': ror, 'Reports': row['A']}, ignore_index=True)
-        print(dis_f)
-        print('FEMALE')
-    dis_f.to_csv('Disproportionate_analysis_female_NEWNEW.csv')
+    print('FEMALE DONE')
+    dis_f.to_csv('Disproportionate_analysis_female.csv')
 
 
 if __name__ == '__main__':
