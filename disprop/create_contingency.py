@@ -73,15 +73,68 @@ def calc_conti_gender(gender, path_1):
     df_conti.to_csv(name)
     print([name, ' DONE .....'])
     
-  def main():
-    # path = 'C:\\Users\\TARIQOPLATA\\PycharmProjects\\FAERS_BZD-Gender\\data\\General_data\\'
-    path_1 = 'C:\\Users\\TARIQOPLATA\\PycharmProjects\\FAERS_BZD-Gender\\data\\FINAL\\' + 'FINISHED_FULLRES.csv'
-    #df = pd.read_csv(path_1)
-    #change_aes(df)
-    # df = df[df['DRUG'] == 'alprazolam']
-    # df = df[df['Gender'] == 'M']
-    # sum = df['0'].sum()
-    # print(sum)
-    #meddra_check(df)
+    
+ def get_ae():
+    df = pd.read_csv(path+'/ADVERSE_REACTIONS.txt', sep='$')
+    df = df.drop('PERIOD', axis=1)
+    return df
+
+
+def get_demo():
+    df = pd.read_csv(path+'/DEMOGRAPHICS.txt', sep='$')
+    df = df.drop('fda_dt', axis=1)
+    df = df.drop('I_F_COD', axis=1)
+    df = df.drop('event_dt', axis=1)
+    df = df.drop('COUNTRY_CODE', axis=1)
+    df = df.drop('Period', axis=1)
+    df = df.drop('AGE', axis=1)
+    df = df.drop('caseid', axis=1)
+    df = df.drop('caseversion', axis=1)
+    df['Gender'] = df['Gender'].replace('', 'UNK', regex=True)
+    df['Gender'].fillna('', inplace=True)
+    df['Gender'] = df['Gender'].replace(np.nan, 'UNK', regex=True)
+    df['Gender'] = df['Gender'].replace('', 'UNK', regex=True)
+    df['Gender'] = df['Gender'].replace(' ', 'UNK', regex=True)
+    return df
+    
+    
+ def get_drugs():
+    df = pd.read_csv(path+'/DRUGS_STANDARDIZED.txt', sep='$')
+    df = df.drop('PERIOD', axis=1)
+    df = df.drop('DRUG_ID', axis=1)
+    df = df.drop('ROLE_COD', axis=1)
+    df = df.drop('RXAUI', axis=1)
+    #df = df.drop('DRUG_SEQ', axis=1)
+    return df
+
+    
+ def merge_data():
+    df_ae = get_ae()
+    df_demo = get_demo()
+    df_indi = get_indi()
+    df_drugs = get_drugs()
+    df = pd.merge(df_demo, df_ae, on=['primaryid'])
+    df = pd.merge(df_drugs, df, on=['primaryid'])
+    df = pd.merge(df_indi, df, on=['primaryid', 'DRUG_SEQ'])
+    df = df.drop('DRUG_SEQ', axis=1)
+    df = df.drop_duplicates(subset=['DRUG', 'Gender', 'primaryid', 'ADVERSE_EVENT', 'DRUG_INDICATION'], keep='first', ignore_index=True)
+    df.to_csv('Merged_data_Indis.csv')
+    print(df)
+    return df
+    
+    
+ def count_data(df):
+    df2 = df.groupby(['DRUG_INDICATION', 'Gender']).size()
+    df2.to_csv('Drug_Indication_Gender_Size.csv')
+    df5 = df.groupby(['DRUG', 'Gender', 'ADVERSE_EVENT', 'DRUG_INDICATION']).size()
+    df5.to_csv('Gender_Fullresults_DRUGGENDERAEINDI.csv')
+    #df3 = df.groupby(['DRUG_INDICATION']).size()
+    #df3.to_csv('Gender_Fullresults_INDICATION.csv')
+    #print(df3)
+    
+    
+ def main():
+    df = merge_data()
+    count_data(df)
     calc_conti_gender('M', path_1)
     calc_conti_gender('F', path_1)
