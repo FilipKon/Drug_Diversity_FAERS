@@ -13,12 +13,16 @@ pd.set_option('display.max_rows', 1000)
 #pd.set_option('display.max_columns', 1000)
 import matplotlib.pyplot as plt
 
-path = 'C:\\Users\\TARIQOPLATA\\PycharmProjects\\FAERS_final\\'
-# path = '\Users\'
+"""
+    TO SCRIPT WAS USED TO CREATE THE HIERACHICAL CLUSTERING OF THE PCA RESULTS WHICH COME FROM THE COMBO DISTANCE MATRIX (FIGURE 3 PHARMACOPHORE FINGERPRINT)
+"""
+
+# ADD PATH OF IN WHICH ALL DATA IS
+path = ''
 
 
 def thomas_results():
-    df_combo = pd.read_csv('C:\\Users\\TARIQOPLATA\\PycharmProjects\\FAERS_final\\data\\dist_mtx_combo.csv')
+    df_combo = pd.read_csv('dist_mtx_combo.csv')
     #df_combo = df_combo.set_index('Unnamed: 0')
     #sns.clustermap(df_combo, metric="correlation", method="single")
     #plt.show()
