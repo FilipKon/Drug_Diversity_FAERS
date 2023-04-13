@@ -100,7 +100,7 @@ def get_demo():
 
 
 def get_drugs():
-    df = pd.read_csv(path + '/DRUGS_STANDARDIZED.txt', sep='$')
+    df = pd.read_csv('C:\\Users\\TARIQOPLATA\\PycharmProjects\\FAERS_BZD-Gender\\data\\Khaleel2022\\DRUGS_STANDARDIZED.txt', sep='$')
     df = df.drop('PERIOD', axis=1)
     df = df.drop('DRUG_ID', axis=1)
     df = df.drop('RXAUI', axis=1)
@@ -124,8 +124,8 @@ def merge_data():
     df_ae = get_ae()
     df_demo = get_demo()
     df_indi = get_indi()
-    df_drugs = get_drugs()
     df_source = get_source()
+    df_drugs = get_drugs()
     df = pd.merge(df_demo, df_ae, on=['primaryid'])
     df = pd.merge(df_drugs, df, on=['primaryid'])
     df = pd.merge(df_source, df, on=['primaryid'])
