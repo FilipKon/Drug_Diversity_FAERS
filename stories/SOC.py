@@ -165,7 +165,7 @@ def get_drug_totals(df):
 def main():
     df_f = pd.read_csv(path + '\\data\\data\\Old_gold\\Disprop_analysis_female_with_HTs.csv')
     df_m = pd.read_csv(path + '\\data\\data\\Old_gold\\Disprop_analysis_male_with_HTs.csv')
-    hts = ['investigations']
+    hts = ['nervous system disorders', 'psychiatric disorders']
     df_f = df_f[df_f['HT'].isin(hts)]
     df_m = df_m[df_m['HT'].isin(hts)]
 
@@ -272,8 +272,8 @@ def fig4_overview():
     df_m = pd.read_csv(path + '\\data\\data\\Old_gold\\Disprop_analysis_male_with_HTs.csv')
     df_m['Sex'] = 'M'
     df_f['Sex'] = 'F'
-    df_m = df_m[df_m['DRUG'] == 'nordazepam']
-    df_f = df_f[df_f['DRUG'] == 'nordazepam']
+    #df_m = df_m[df_m['DRUG'] == 'nordazepam']
+    #df_f = df_f[df_f['DRUG'] == 'nordazepam']
     hts = ['psychiatric disorders', 'nervous system disorders']
     df_m = df_m[df_m['HT'].isin(hts)]
     df_f = df_f[df_f['HT'].isin(hts)]
@@ -303,4 +303,4 @@ def fig4_overview():
 
 
 if __name__ == '__main__':
-    fig4_overview()
+    main()

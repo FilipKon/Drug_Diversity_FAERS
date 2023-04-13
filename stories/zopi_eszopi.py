@@ -75,10 +75,10 @@ symbols = {'alprazolam': 'circle', 'diazepam': 'hexagon', 'lorazepam': 'star', '
 path = 'C:\\Users\\TARIQOPLATA\\PycharmProjects\\FAERS_final\\'
 #path = '/Users/ftk/Documents/Work/FAERS_final/'
 
-drug_1 = 'midazolam'
-drug_2 = 'nordazepam'
-drug1 = 'midazolam'
-drug2 = 'nordazepam'
+drug_1 = 'zopiclone'
+drug_2 = 'eszopiclone'
+drug1 = 'zopiclone'
+drug2 = 'eszopiclone'
 
 def bar_chart(df):
     # df = df[df['Sex'] == 'M']

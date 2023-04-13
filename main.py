@@ -77,8 +77,9 @@ def bzds():
 def main():
     df_f = pd.read_csv(path + 'Disprop_analysis_female_with_HTs.csv')
     df_m = pd.read_csv(path + 'Disprop_analysis_male_with_HTs.csv')
-    print(df_f)
-    df_m.to_excel('FAERS_data_male.xlsx')
+    hts = ['injury;poisoning and procedural complications', 'psychiatric disorders']
+    df_f = df_f[df_f['HT'].isin(hts)]
+    df_m = df_m[df_m['HT'].isin(hts)]
 
 
 if __name__ == '__main__':

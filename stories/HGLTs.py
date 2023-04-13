@@ -24,7 +24,6 @@ symbols = {'alprazolam': 'circle', 'diazepam': 'hexagon', 'lorazepam': 'star', '
            'eszopiclone': 'star-square-open',
            'temazepam': 'bowtie-open', 'zopiclone': 'asterisk-open', 'bromazepam': 'triangle-right-open',
            'oxazepam': 'hexagon2-open', 'clobazam': 'triangle-se', 'triangle-sw': 'hash', 'remimazolam': 'diamond-open'}
-
 colors_d = {'alprazolam': '#FF5733', 'diazepam': '#75A7AB', 'lorazepam': '#B73C22', 'clonazepam': '#906056',
             'zolpidem': '#9DF8DF', 'tetrazepam': '#ff9d5c', 'cloxazolam': '#4b4c07', 'clotiazepam': '#e9fe92',
             'flumazenil': '#D6DA03', 'triazulenone': '#FFD4EB', 'quazepam': '#F9C469', 'nordazepam': '#68D6DF',
@@ -262,8 +261,6 @@ def main_v1():
     df_m = pd.read_csv(path + 'Disprop_analysis_male_with_HTs.csv')
     hts = ['psychiatric disorders nec', 'suicidal and self-injurious behaviours nec', 'anxiety disorders and symptoms',
            'sleep disorders and disturbances', 'sleep disturbances (incl subtypes)']
-    hts = ['haematology investigations (incl blood groups)', 'toxicology and therapeutic drug monitoring',
-           'cardiac and vascular investigations (excl enzyme tests)']
     df_f = df_f[df_f['HT_level2'].isin(hts)]
     df_m = df_m[df_m['HT_level2'].isin(hts)]
 
@@ -300,6 +297,7 @@ def main_v1():
                           size=18
                       ))
     fig = create_perc_figures(df, hts, fig)
+    fig.write_html('Figure7A.html')
     fig.show()
     j = 0
     #for item in hts:
