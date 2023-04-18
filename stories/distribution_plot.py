@@ -92,7 +92,7 @@ symbols = {'alprazolam': 'circle', 'diazepam': 'hexagon', 'lorazepam': 'star', '
 
 def main_copy():
     path = 'C:\\Users\\TARIQOPLATA\PycharmProjects\\FAERS_final\\data\\data\\Old_gold\\'
-    #path = '/Users/ftk/Documents/Work/FAERS_final/data/Old_gold/'
+    # path = '/Users/ftk/Documents/Work/FAERS_final/data/Old_gold/'
     df_f = pd.read_csv(path + 'Disprop_analysis_female_with_HTs.csv')
     df_m = pd.read_csv(path + 'Disprop_analysis_male_with_HTs.csv')
     hts = ['nervous system disorders', 'psychiatric disorders']
@@ -234,13 +234,13 @@ def fin_scatter(df_part, df_part2):
         fig.add_trace(go.Scatter(x=df_part_d['IC025_f'], y=df_part_d['IC025_m'], showlegend=True, mode='markers',
                                  name=item,
                                  hovertemplate=df_part_d["AE"],
-                                 #hoverinfo="text",
+                                 # hoverinfo="text",
                                  marker=dict(color=list(map(Setcolor_full, df_part_d['DRUG'])),
                                              symbol=list(map(Setshape, df_part_d['DRUG'])))))
         fig.add_trace(go.Scatter(x=df_part2_d['IC025_f'], y=df_part2_d['IC025_m'], showlegend=True, mode='markers',
                                  name=item,
                                  hovertemplate=df_part2_d["AE"],
-                                 #hoverinfo="text",
+                                 # hoverinfo="text",
                                  marker=dict(color=list(map(Setcolor_opa, df_part2_d['DRUG'])),
                                              symbol=list(map(Setshape, df_part2_d['DRUG'])))))
 
@@ -250,12 +250,12 @@ def fin_scatter(df_part, df_part2):
     fig.update_traces(marker={'size': 8})
     fig.update_layout(font=dict(size=18), height=1200, width=1200)
     fig.show()
-    #fig.write_html("Figure_8A_v2.html")
+    # fig.write_html("Figure_8A_v2.html")
 
 
 def main_v1():
     path = 'C:\\Users\\TARIQOPLATA\PycharmProjects\\FAERS_final\\data\\data\\Old_gold\\'
-    #path = '/Users/ftk/Documents/Work/FAERS_final/data/Old_gold/'
+    # path = '/Users/ftk/Documents/Work/FAERS_final/data/Old_gold/'
     df_f = pd.read_csv(path + 'Disprop_analysis_female_with_HTs.csv')
     df_m = pd.read_csv(path + 'Disprop_analysis_male_with_HTs.csv')
     hts = ['nervous system disorders', 'psychiatric disorders']
@@ -283,9 +283,13 @@ def main_v1():
         else:
             ratio = df_f['IC025'].sum() / df_m['IC025'].sum()
             count = df_f['IC025'].sum() + df_m['IC025'].sum()
-        total_df = total_df.append({'DRUG': row['DRUG'], 'AE': row['AE'], 'Ratio': ratio, 'Count': count,
-                                    'IC025_m': df_m['IC025'].sum(), 'IC025_f': df_f['IC025'].sum()},
-                                   ignore_index=True)
+        df_new = pd.DataFrame([{'DRUG': row['DRUG'], 'AE': row['AE'], 'Ratio': ratio, 'Count': count,
+                                'IC025_m': df_m['IC025'].sum(), 'IC025_f': df_f['IC025'].sum()}])
+        total_df = pd.concat([total_df, df_new], axis=0, ignore_index=True)
+        # total_df = total_df.append({'DRUG': row['DRUG'], 'AE': row['AE'], 'Ratio': ratio, 'Count': count,
+        #                            'IC025_m': df_m['IC025'].sum(), 'IC025_f': df_f['IC025'].sum()},
+        #                           ignore_index=True)
+    total_df.to_csv('Sex_ratios.csv')
     total_df = total_df.sort_values('DRUG', ascending=True)
     # total_df.to_csv('Distributions.csv')
     df_part = total_df[(total_df['Ratio'] < 0.5) | (total_df['Ratio'] > 2)]
@@ -301,13 +305,13 @@ def main_v1():
     df_part2 = df_part2.drop(df_part2[df_part2.IC025_m == 0.00].index)
     df_part2 = df_part2.drop_duplicates(subset=['DRUG', 'AE', 'Ratio', 'IC025_m', 'IC025_f'], keep='first',
                                         ignore_index=True)
-    #fin_scatter(df_part, df_part2)
+    # fin_scatter(df_part, df_part2)
 
     # SHOW THE TOP 20 AEs for each sex only axis == 0
     # MALE
     df_axis1 = total_df[total_df['IC025_f'] == 0.0]
     male_part = df_axis1.drop_duplicates(subset=['DRUG', 'AE', 'Ratio', 'IC025_m', 'IC025_f'], keep='first',
-                                          ignore_index=True)
+                                         ignore_index=True)
     male_part2 = male_part.groupby(['AE'], as_index=False).sum()
     male_part2 = male_part2.sort_values(['IC025_m'], ascending=False)
     male_part2 = male_part2.head(20)
@@ -317,12 +321,22 @@ def main_v1():
                   color_discrete_map=colors_d)
     fig5.update_layout(barmode='stack', xaxis={'categoryorder': 'total descending'},
                        yaxis={'categoryorder': 'total descending'})
-    fig5.show()
+
+    # OLD CONBTROL
+    df_big = male_part.groupby(['DRUG'], as_index=False).sum()
+    df_big = df_big.sort_values(['IC025_m'], ascending=False)
+    df_big = df_big.head(10)
+    fig4 = px.bar(df_big, x="DRUG", y="IC025_m", title="Top 10 male DRUGS OLD CONTROL", color="DRUG",
+                    color_discrete_map=colors_d) #width=2100, height=700
+    fig4.update_xaxes(categoryorder='max descending')
+    fig4.show()
+    #fig5.show()
 
     # FEMALE
     df_axis1 = total_df[total_df['IC025_m'] == 0.0]
     male_part = df_axis1.drop_duplicates(subset=['DRUG', 'AE', 'Ratio', 'IC025_m', 'IC025_f'], keep='first',
-                                          ignore_index=True)
+                                         ignore_index=True)
+    #male_part = male_part.drop(male_part[male_part.AE == 'drug withdrawal syndrome neonatal'].index)
     male_part2 = male_part.groupby(['AE'], as_index=False).sum()
     male_part2 = male_part2.sort_values(['IC025_f'], ascending=False)
     male_part2 = male_part2.head(20)
@@ -332,8 +346,15 @@ def main_v1():
                   color_discrete_map=colors_d)
     fig5.update_layout(barmode='stack', xaxis={'categoryorder': 'total descending'},
                        yaxis={'categoryorder': 'total descending'})
-    fig5.show()
-
+    # OLD CONBTROL
+    df_big = male_part.groupby(['DRUG'], as_index=False).sum()
+    df_big = df_big.sort_values(['IC025_m'], ascending=False)
+    df_big = df_big.head(10)
+    fig4 = px.bar(df_big, x="DRUG", y="IC025_m", title="Top 10 male DRUGS OLD CONTROL", color="DRUG",
+                    color_discrete_map=colors_d) #width=2100, height=700
+    fig4.update_xaxes(categoryorder='max descending')
+    fig4.show()
+    #fig5.show()
 
     male_part = total_df[(total_df['Ratio'] < 0.5) | (total_df['IC025_m'] == 0.0)]
     male_part = male_part.drop(male_part[male_part.IC025_m == 0.00].index)
@@ -342,18 +363,29 @@ def main_v1():
     male_part = male_part.drop_duplicates(subset=['DRUG', 'AE', 'Ratio', 'IC025_m', 'IC025_f'], keep='first',
                                           ignore_index=True)
     male_part2 = male_part.groupby(['AE'], as_index=False).sum()
+    print(male_part2)
     male_part2 = male_part2.sort_values(['IC025_m'], ascending=False)
     male_part2 = male_part2.head(20)
     males_aes = male_part2['AE'].tolist()
     male_part3 = male_part[male_part['AE'].isin(males_aes)]
     print(male_part2)
-    fig5 = px.bar(male_part3, x="AE", y="IC025_m", title="Top 10 male AEs", color="DRUG",
+    fig5 = px.bar(male_part3, x="AE", y="IC025_m", title="Top 10 male AEs?", color="DRUG",
                   color_discrete_map=colors_d)
     fig5.update_layout(barmode='stack', xaxis={'categoryorder': 'total descending'},
                        yaxis={'categoryorder': 'total descending'})
-    #fig5.update_xaxes(tickangle=90)
-    #fig5.show()
+    fig5.update_xaxes(tickangle=90)
+    fig5.show()
+    #########################################
+    df_big = male_part.groupby(['DRUG'], as_index=False).sum()
+    df_big = df_big.sort_values(['IC025_m'], ascending=False)
+    df_big = df_big.head(10)
+    fig4 = px.bar(df_big, x="DRUG", y="IC025_m", title="Top 10 male DRUGS", color="DRUG",
+                    color_discrete_map=colors_d) #width=2100, height=700
+    fig4.update_xaxes(categoryorder='max descending')
+    fig4.show()
+    #########################################
 
+    # FEMALES
     female_part = total_df[(total_df['Ratio'] > 2) | (total_df['IC025_f'] == 0.0)]
     female_part = female_part.drop(female_part[female_part.IC025_f == 0.00].index)
     df_axis1 = total_df[total_df['IC025_m'] == 0.0]
@@ -361,7 +393,10 @@ def main_v1():
     female_part = female_part.drop_duplicates(subset=['DRUG', 'AE', 'Ratio', 'IC025_m', 'IC025_f'], keep='first',
                                               ignore_index=True)
     female_part2 = female_part.groupby(['AE'], as_index=False).sum()
-    female_part2 = female_part2.sort_values(['IC025_m'], ascending=False)
+    female_part2 = female_part2.drop(female_part2[female_part2.AE == 'drug withdrawal syndrome neonatal'].index)
+    female_part2 = female_part2.drop(female_part2[female_part2.AE == 'hypotonia neonatal'].index)
+    female_part2 = female_part2.sort_values(['IC025_f'], ascending=False)
+    print(female_part2)
     female_part2 = female_part2.head(20)
     females_aes = female_part2['AE'].tolist()
     female_part3 = female_part[female_part['AE'].isin(females_aes)]
@@ -370,29 +405,35 @@ def main_v1():
                   color_discrete_map=colors_d)
     fig6.update_layout(barmode='stack', xaxis={'categoryorder': 'total descending'},
                        yaxis={'categoryorder': 'total descending'})
-    #fig6.show()
+    fig6.show()
+    #########################################
+    df_big = female_part.groupby(['DRUG'], as_index=False).sum()
+    df_big = df_big.sort_values(['IC025_f'], ascending=False)
+    df_big = df_big.head(10)
+    fig4 = px.bar(df_big, x="DRUG", y="IC025_f", title="Top 10 female DRUGS", color="DRUG",
+                    color_discrete_map=colors_d) #width=2100, height=700
+    fig4.update_xaxes(categoryorder='max descending')
+    fig4.show()
+    #########################################
+    #aes = ['restlessness', 'mania', 'hypomania', 'logorrhoea', 'psychotic behaviour']
+    #male_part3 = male_part3[male_part3['AE'].isin(aes)]
+    #figX = px.pie(male_part3, values="IC025_m", names='DRUG', title="MALES", color_discrete_map=colors_d_full,
+    #              color="DRUG")
+    #figX.update_traces(textposition='inside', textinfo='percent+label', textfont_size=20, hole=.3,
+    #                   title='MALE')
+    # figX.show()
 
-    aes = ['restlessness', 'mania', 'hypomania', 'logorrhoea', 'psychotic behaviour']
-    male_part3 = male_part3[male_part3['AE'].isin(aes)]
-    figX = px.pie(male_part3, values="IC025_m", names='DRUG', title="MALES", color_discrete_map=colors_d_full,
-                  color="DRUG")
-    figX.update_traces(textposition='inside', textinfo='percent+label', textfont_size=20, hole=.3,
-                       title='MALE')
-    #figX.show()
+    #aes = ['psychomotor hyperactivity', 'impulsive behaviour']
+    #female_part3 = female_part3[female_part3['AE'].isin(aes)]
+    #figX = px.pie(female_part3, values="IC025_f", names='DRUG', title="FEMALES", color_discrete_map=colors_d_full,
+    #              color="DRUG")
+    #figX.update_traces(textposition='inside', textinfo='percent+label', textfont_size=20, hole=.3,
+    #                   title='FEMALE')
+    # figX.show()
 
-    aes = ['psychomotor hyperactivity', 'impulsive behaviour']
-    female_part3 = female_part3[female_part3['AE'].isin(aes)]
-    figX = px.pie(female_part3, values="IC025_f", names='DRUG', title="FEMALES", color_discrete_map=colors_d_full,
-                  color="DRUG")
-    figX.update_traces(textposition='inside', textinfo='percent+label', textfont_size=20, hole=.3,
-                       title='FEMALE')
-    #figX.show()
-
-
-
-    #fig = px.scatter(male_part, x="IC025_f", y="IC025_m", color="DRUG", hover_data=['AE', 'Ratio', 'Count'],
+    # fig = px.scatter(male_part, x="IC025_f", y="IC025_m", color="DRUG", hover_data=['AE', 'Ratio', 'Count'],
     #                 symbol_map=symbols, symbol="DRUG", opacity=1.0, height=1200, width=1200, title='Male')
-    #fig.show()
+    # fig.show()
     # fig = px.scatter(df_part, x="IC025_f", y="IC025_m", color="DRUG", hover_data=['AE', 'Ratio', 'Count'],
     #                 symbol_map=symbols, symbol="DRUG", opacity=1.0, height=1200, width=1200)
     # fig.update_layout(showlegend=False)
@@ -402,64 +443,64 @@ def main_v1():
     # fig.update_layout(font=dict(size=18))
     # fig.show()
     """
-        df_m2 = total_df.groupby(['AE', 'DRUG'], as_index=False).sum()
-        df_fx = df_m2[df_m2['IC025_f'] == 0.0]
-        df_fx = df_fx.sort_values('IC025_m', ascending=False)
-        df_fx = df_fx.drop_duplicates(subset=['DRUG', 'AE', 'IC025_m'], keep='first', ignore_index=True)
-        df_fx = df_fx.head(40)
-        print("PART 1")
-        print(df_fx)
-        df_f_aes = df_fx['AE'].tolist()
-        df_f_drug = df_fx['DRUG'].tolist()
-        df_fx = total_df.loc[total_df['AE'].isin(df_f_aes) & total_df['DRUG'].isin(df_f_drug)]
-        df_fx = df_fx.drop_duplicates(subset=['DRUG', 'AE', 'IC025_m'], keep='first', ignore_index=True)
-        df_fx = df_fx.sort_values('IC025_m', ascending=False)
-        df_fx = df_fx.head(25)
-        print("PART 2")
-        print(df_fx)
-        fig2 = px.bar(df_fx, x="IC025_m", y="AE", title="Top 10 male AEs", color="DRUG", color_discrete_map=colors_d,
-                      orientation='h')
-        fig2.update_layout(barmode='stack', xaxis={'categoryorder': 'total ascending'},
-                           yaxis={'categoryorder': 'total ascending'})
-        fig2.show()
+    df_m2 = total_df.groupby(['AE', 'DRUG'], as_index=False).sum()
+    df_fx = df_m2[df_m2['IC025_f'] == 0.0]
+    df_fx = df_fx.sort_values('IC025_m', ascending=False)
+    df_fx = df_fx.drop_duplicates(subset=['DRUG', 'AE', 'IC025_m'], keep='first', ignore_index=True)
+    df_fx = df_fx.head(40)
+    print("PART 1")
+    print(df_fx)
+    df_f_aes = df_fx['AE'].tolist()
+    df_f_drug = df_fx['DRUG'].tolist()
+    df_fx = total_df.loc[total_df['AE'].isin(df_f_aes) & total_df['DRUG'].isin(df_f_drug)]
+    df_fx = df_fx.drop_duplicates(subset=['DRUG', 'AE', 'IC025_m'], keep='first', ignore_index=True)
+    df_fx = df_fx.sort_values('IC025_m', ascending=False)
+    df_fx = df_fx.head(25)
+    print("PART 2")
+    print(df_fx)
+    fig2 = px.bar(df_fx, x="IC025_m", y="AE", title="Top 10 male AEs", color="DRUG", color_discrete_map=colors_d,
+                    orientation='h')
+    fig2.update_layout(barmode='stack', xaxis={'categoryorder': 'total ascending'},
+                        yaxis={'categoryorder': 'total ascending'})
+    fig2.show()
 
-        df_mx = df_m2[df_m2['IC025_m'] == 0.0]
-        df_mx = df_mx.sort_values('IC025_f', ascending=False)
-        df_mx = df_mx.drop_duplicates(subset=['DRUG', 'AE', 'IC025_f'], keep='first', ignore_index=True)
-        df_mx = df_mx.head(40)
-        df_m_aes = df_mx['AE'].tolist()
-        df_m_drug = df_mx['DRUG'].tolist()
-        df_mx = total_df.loc[total_df['AE'].isin(df_m_aes) & total_df['DRUG'].isin(df_m_drug)]
-        df_mx = df_mx.drop_duplicates(subset=['DRUG', 'AE', 'IC025_f'], keep='first', ignore_index=True)
-        df_mx = df_mx.sort_values('IC025_f', ascending=False)
-        df_mx = df_mx.head(23)
-        fig3 = px.bar(df_mx, x="AE", y="IC025_f", title="Top 10 female AEs", color="DRUG", color_discrete_map=colors_d)
-        fig3.update_layout(barmode='stack', xaxis={'categoryorder': 'total descending'},
-                           yaxis={'categoryorder': 'total descending'})
-        fig3.show()
+    df_mx = df_m2[df_m2['IC025_m'] == 0.0]
+    df_mx = df_mx.sort_values('IC025_f', ascending=False)
+    df_mx = df_mx.drop_duplicates(subset=['DRUG', 'AE', 'IC025_f'], keep='first', ignore_index=True)
+    df_mx = df_mx.head(40)
+    df_m_aes = df_mx['AE'].tolist()
+    df_m_drug = df_mx['DRUG'].tolist()
+    df_mx = total_df.loc[total_df['AE'].isin(df_m_aes) & total_df['DRUG'].isin(df_m_drug)]
+    df_mx = df_mx.drop_duplicates(subset=['DRUG', 'AE', 'IC025_f'], keep='first', ignore_index=True)
+    df_mx = df_mx.sort_values('IC025_f', ascending=False)
+    df_mx = df_mx.head(23)
+    fig3 = px.bar(df_mx, x="AE", y="IC025_f", title="Top 10 female AEs", color="DRUG", color_discrete_map=colors_d)
+    fig3.update_layout(barmode='stack', xaxis={'categoryorder': 'total descending'},
+                        yaxis={'categoryorder': 'total descending'})
+    fig3.show()
+  
+    df_big = total_df[total_df['Ratio'] < 0.5]
+    df_small = total_df[total_df['Ratio'] > 2]
 
-        df_big = total_df[total_df['Ratio'] < 0.5]
-        df_small = total_df[total_df['Ratio'] > 2]
-
-        df_big = df_big.groupby(['AE'], as_index=False).sum()
-        df_big = df_big.sort_values(['IC025_m'], ascending=False)
+    df_big = df_big.groupby(['AE'], as_index=False).sum()
+    df_big = df_big.sort_values(['IC025_m'], ascending=False)
         # print(df_big)
-        df_big = df_big.head(20)
-        fig4 = px.bar(df_big, x="AE", y="IC025_m", title="Top 10 male DRUGS from < 0.5", color="AE",
-                      color_discrete_map=colors_d, width=2100, height=700)
-        fig4.update_xaxes(categoryorder='max descending')
-        fig4.update_xaxes(tickangle=90)
-        fig4.show()
+    df_big = df_big.head(20)
+    fig4 = px.bar(df_big, x="AE", y="IC025_m", title="Top 10 male DRUGS from < 0.5", color="AE",
+                    color_discrete_map=colors_d, width=2100, height=700)
+    fig4.update_xaxes(categoryorder='max descending')
+    fig4.update_xaxes(tickangle=90)
+    fig4.show()
 
-        df_small = df_small.groupby(['AE'], as_index=False).sum()
-        df_small = df_small.sort_values(['IC025_f'], ascending=False)
-        df_small = df_small.head(20)
-        print(df_small)
-        fig5 = px.bar(df_small, x="AE", y="IC025_f", title="Top 10 female DRUGS", color="AE",
-                      color_discrete_map=colors_d, width=2100, height=700)
-        fig5.update_xaxes(categoryorder='max descending')
-        fig5.update_xaxes(tickangle=90)
-        fig5.show()
+    df_small = df_small.groupby(['AE'], as_index=False).sum()
+    df_small = df_small.sort_values(['IC025_f'], ascending=False)
+    df_small = df_small.head(20)
+    print(df_small)
+    fig5 = px.bar(df_small, x="AE", y="IC025_f", title="Top 10 female DRUGS", color="AE",
+                    color_discrete_map=colors_d, width=2100, height=700)
+    fig5.update_xaxes(categoryorder='max descending')
+    fig5.update_xaxes(tickangle=90)
+    fig5.show()
         # df_m1 = total_df[total_df['IC025_f'] != '0.0']
         # df_f1 = total_df[total_df['IC025_m'] != '0.0']
         # print(df_m1)
@@ -467,14 +508,15 @@ def main_v1():
         # fig.show()
         # fig = px.pie(df_f1, values='IC025_f', names="DRUG", title="Percentage of drugs having only male AEs FEMALE")
         # fig.show()
-        fre = total_df.assign(
-            bins=pd.cut(total_df["Ratio"], [0.000, 0.167, 0.200, 0.250, 0.333, 0.500, 0.800, 1.250, 2.000, 3.000,
-                                            4.000, 5.000, 6.000, 500.000], labels=['0 to 0.167', '0.167 to 0.2',
-                                                                                   '0.2 to 0.25', '0.25 to 0.33',
-                                                                                   '0.33 to 0.5', '0.5 to 0.8',
-                                                                                   '0.8 to 1.25', '1.25 to 2',
-                                                                                   '2 to 3', '3 to 4', '4 to 5',
-                                                                                   '5 to 6', '6 to 500']))
+    
+    fre = total_df.assign(
+        bins=pd.cut(total_df["Ratio"], [0.000, 0.167, 0.200, 0.250, 0.333, 0.500, 0.800, 1.250, 2.000, 3.000,
+                                        4.000, 5.000, 6.000, 500.000], labels=['0 to 0.167', '0.167 to 0.2',
+                                                                                '0.2 to 0.25', '0.25 to 0.33',
+                                                                                '0.33 to 0.5', '0.5 to 0.8',
+                                                                                '0.8 to 1.25', '1.25 to 2',
+                                                                                '2 to 3', '3 to 4', '4 to 5',
+                                                                                '5 to 6', '6 to 500']))
         print(fre)
         # fre_count_sum = fre.groupby(["bins", "DRUG"], as_index=False)["Ratio"].sum()
         fre_count_sum = fre.groupby(["bins", "DRUG"], as_index=False).sum()

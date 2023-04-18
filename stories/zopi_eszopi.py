@@ -80,6 +80,7 @@ drug_2 = 'eszopiclone'
 drug1 = 'zopiclone'
 drug2 = 'eszopiclone'
 
+
 def bar_chart(df):
     # df = df[df['Sex'] == 'M']
     fig = px.bar(df, x="AE", y="IC025", color='Sex', barmode='group', height=400, pattern_shape="DRUG",
@@ -107,41 +108,41 @@ def pie_chart(df, sex, drug):
 def scatter(df, drug1, drug2):
     fig_fin = make_subplots(rows=1, cols=2, subplot_titles=(drug1, drug2))
     #BROTIZOLAM, ETIZOLAM
-    df = df.drop_duplicates(subset=['DRUG', 'AE', 'IC025', 'Reports', 'Sex'])
+    df = df.drop_duplicates(subset=['DRUG', 'AE', 'IC025', 'Reports', 'Sex', 'PRR', 'ROR'])
     df = df.drop('IDX', axis=1)
     df = df.drop('HT_level2', axis=1)
     df = df.drop('HT', axis=1)
     #df = df.drop('HT_level3', axis=1)
     df = df.drop('IC', axis=1)
-    df = df.drop('ROR', axis=1)
+    #df = df.drop('ROR', axis=1)
     df_e = df[df['DRUG'] == drug1]
     df_e = df_e.drop_duplicates(subset=['DRUG', 'AE'])
-    df_e = df_e.sort_values(by=['IC025'], ascending=False)
+    df_e = df_e.sort_values(by=['ROR'], ascending=False)
     df_e = df_e.head(10)
     aes_1 = df_e['AE'].tolist()
     df_1 = df[df['AE'].isin(aes_1)]
     print(df_e)
 
-    fig = px.scatter(df_1, y="IC025", x="AE", color="Sex", symbol="DRUG", color_discrete_map=colors_g,
+    fig = px.scatter(df_1, y="ROR", x="AE", color="Sex", symbol="DRUG", color_discrete_map=colors_g,
                      title=drug1)
 
     fig.update_traces(marker_size=15)
-    fig.update_layout(yaxis_range=[0, 6])
+    #fig.update_layout(yaxis_range=[0, 6])
     fig.update_xaxes(categoryorder='total descending')
     #fig.show()
 
     df_z = df[df['DRUG'] == drug2]
     df_z = df_z.drop_duplicates(subset=['DRUG', 'AE'])
-    df_z = df_z.sort_values(by=['IC025'], ascending=False)
+    df_z = df_z.sort_values(by=['ROR'], ascending=False)
     df_z = df_z.head(10)
     aes_1 = df_z['AE'].tolist()
     df_2 = df[df['AE'].isin(aes_1)]
     print(df_z)
 
-    fig2 = px.scatter(df_1, y="IC025", x="AE", color="Sex", symbol="DRUG", color_discrete_map=colors_g,
+    fig2 = px.scatter(df_1, y="ROR", x="AE", color="Sex", symbol="DRUG", color_discrete_map=colors_g,
                       title=drug2)
     fig2.update_traces(marker_size=15)
-    fig2.update_layout(yaxis_range=[0, 6])
+    #fig2.update_layout(yaxis_range=[0, 6])
     fig2.update_xaxes(categoryorder='total descending')
     #fig2.show()
 
@@ -151,7 +152,7 @@ def scatter(df, drug1, drug2):
 
     fig_fin.add_trace(
         go.Scatter(
-            y=df_1["IC025"],
+            y=df_1["ROR"],
             x=df_1["AE"],
             mode='markers',
             name=drug1,
@@ -163,7 +164,7 @@ def scatter(df, drug1, drug2):
     fig_fin.update_xaxes(categoryorder='max descending', row=1, col=1)
     fig_fin.add_trace(
         go.Scatter(
-            y=df_2["IC025"],
+            y=df_2["ROR"],
             x=df_2["AE"],
             mode='markers',
             name=drug2,
@@ -172,8 +173,8 @@ def scatter(df, drug1, drug2):
             ), row=1, col=2
         )
     fig_fin.update_xaxes(categoryorder='max descending',  row=1, col=2)
-    fig_fin.update_yaxes(range=[-6, 6], row=1, col=2)
-    fig_fin.update_yaxes(range=[-6, 6], row=1, col=1, title_text="IC025")
+    #fig_fin.update_yaxes(range=[-6, 6], row=1, col=2)
+    #fig_fin.update_yaxes(range=[-6, 6], row=1, col=1, title_text="IC025")
     fig_fin.update_xaxes(title_text="Adverse Events", row=1, col=1)
     fig_fin.update_xaxes(title_text="Adverse Events", row=1, col=2)
     fig.update_layout(title_text="Customizing Subplot Axes", height=700)
