@@ -289,7 +289,7 @@ def main_v1():
         # total_df = total_df.append({'DRUG': row['DRUG'], 'AE': row['AE'], 'Ratio': ratio, 'Count': count,
         #                            'IC025_m': df_m['IC025'].sum(), 'IC025_f': df_f['IC025'].sum()},
         #                           ignore_index=True)
-    total_df.to_csv('Sex_ratios.csv')
+    #total_df.to_csv('Sex_ratios.csv')
     total_df = total_df.sort_values('DRUG', ascending=True)
     # total_df.to_csv('Distributions.csv')
     df_part = total_df[(total_df['Ratio'] < 0.5) | (total_df['Ratio'] > 2)]
@@ -388,7 +388,8 @@ def main_v1():
     # FEMALES
     female_part = total_df[(total_df['Ratio'] > 2) | (total_df['IC025_f'] == 0.0)]
     female_part = female_part.drop(female_part[female_part.IC025_f == 0.00].index)
-    df_axis1 = total_df[total_df['IC025_m'] == 0.0]
+    #df_axis1 = total_df[total_df['IC025_m'] == 0.0]
+    df_axis1 = total_df[(total_df['Ratio'] > 2) & (total_df['IC025_m'] == 0.0)]
     female_part = pd.concat([df_axis1, female_part], axis=0)
     female_part = female_part.drop_duplicates(subset=['DRUG', 'AE', 'Ratio', 'IC025_m', 'IC025_f'], keep='first',
                                               ignore_index=True)

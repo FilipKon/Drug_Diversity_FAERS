@@ -352,11 +352,12 @@ def main():
     drugs = df['DRUG'].tolist()
     drugs = list(dict.fromkeys(drugs))
     drugs = sorted(drugs)
-    sexes = ['F', 'M', 'F', 'M', 'F', 'M', 'F', 'M', 'M', 'F', 'M', 'F', 'M', 'F', 'M', 'F', 'M', 'F', 'M', 'F', 'M', 'F', 'M', 'F', 'M'
-             , 'F', 'M', 'F', 'M', 'F', 'M', 'F', 'M', 'F', 'M', 'F', 'M', 'F', 'M', 'F', 'M', 'F', 'M', 'F', 'M', 'F', 'M',
-             'F', 'M', 'F', 'M', 'F', 'M', 'F', 'M', 'F', 'M', 'F', 'M', 'F', 'M', 'F', 'M', 'F', 'M', 'F']
+    #sexes = ['F', 'M', 'F', 'M', 'F', 'M', 'F', 'M', 'M', 'F', 'M', 'F', 'M', 'F', 'M', 'F', 'M', 'F', 'M', 'F', 'M', 'F', 'M', 'F', 'M'
+    #         , 'F', 'M', 'F', 'M', 'F', 'M', 'F', 'M', 'F', 'M', 'F', 'M', 'F', 'M', 'F', 'M', 'F', 'M', 'F', 'M', 'F', 'M',
+    #         'F', 'M', 'F', 'M', 'F', 'M', 'F', 'M', 'F', 'M', 'F', 'M', 'F', 'M', 'F', 'M', 'F', 'M', 'F']
     df = df.groupby(by=['DRUG', 'HT_level2', 'Sex'], as_index=False).sum()
     print(df)
+    sexes = df['Sex'].tolist()
     colors = [colors_g[category] for category in sexes]
     for ht in hts:
         df2 = df[df['HT_level2'] == ht]
@@ -416,4 +417,4 @@ def neuro_nec():
 
 
 if __name__ == '__main__':
-    main_v1()
+    main()

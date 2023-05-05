@@ -5,6 +5,7 @@ import numpy as np
 import math
 import plotly.graph_objs as go
 from plotly.subplots import make_subplots
+
 warnings.filterwarnings("ignore")
 pd.set_option('display.max_columns', 1000)  # or None
 pd.set_option('display.max_rows', 1000)  # or None
@@ -34,28 +35,30 @@ colors_d = {'alprazolam': '#FF5733', 'diazepam': '#75A7AB', 'lorazepam': '#B73C2
 colors_g = {'F': '#e5a2bd', 'M': '#9aceeb'}
 
 symbols_d = {'alprazolam': "/", 'diazepam': ".", 'lorazepam': "x", 'clonazepam': "-",
-            'zolpidem': "/", 'tetrazepam': "+", 'cloxazolam': ".",
-            'flumazenil': "/", 'triazulenone': "x", 'quazepam': "-", 'nordazepam': "|",
-            'tofisopam': "+", 'mexazolam': ".", 'ketazolam': "/",
-            'cinolazepam': "x", 'oxazolam': "-", 'lormetazepam': "|", 'prazepam': "+",
-            'flunitrazepam': ".", 'estazolam': "/", 'ethyl loflazepate': "",
-            'etizolam': "-", 'brotizolam': "|", 'clorazepate': "+", 'triazolam': ".",
-            'flurazepam': "/", 'zaleplon': "x", 'eszopiclone': "-",
-            'zopiclone': "+", 'bromazepam': "/", 'oxazepam': "x", "nitrazepam": "x",
-            'clobazam': "/", 'midazolam': "x", 'remimazolam': "-"}
+             'zolpidem': "/", 'tetrazepam': "+", 'cloxazolam': ".", 'clotiazepam': ".", 
+             'flumazenil': "/", 'triazulenone': "x", 'quazepam': "-", 'nordazepam': "|",
+             'tofisopam': "+", 'mexazolam': ".", 'ketazolam': "/",
+             'cinolazepam': "x", 'oxazolam': "-", 'lormetazepam': "|", 'prazepam': "+",
+             'flunitrazepam': ".", 'estazolam': "/", 'ethyl loflazepate': "",
+             'etizolam': "-", 'brotizolam': "|", 'clorazepate': "+", 'triazolam': ".",
+             'flurazepam': "/", 'zaleplon': "x", 'eszopiclone': "-",
+             'zopiclone': "+", 'bromazepam': "/", 'oxazepam': "x", "nitrazepam": "x",
+             'clobazam': "/", 'midazolam': "x", 'remimazolam': "-"}
 
-symbols_d = {'nervous system neoplasms benign': "/", 'adjustment disorders (incl subtypes)': ".", 'demyelinating disorders': "x",
+symbols_d = {'nervous system neoplasms benign': "/", 'adjustment disorders (incl subtypes)': ".",
+             'demyelinating disorders': "x",
              'headaches': "-",
-            'nervous system neoplasms malignant and unspecified nec': "/", 'central nervous system infections and inflammations': "+",
+             'nervous system neoplasms malignant and unspecified nec': "/",
+             'central nervous system infections and inflammations': "+",
              'neurological disorders of the eye': ".",
-            'spinal cord and nerve root disorders': "/", 'triazulenone': "x", 'quazepam': "-", 'nordazepam': "|",
-            'tofisopam': "+", 'mexazolam': ".", 'ketazolam': "/",
-            'cinolazepam': "x", 'oxazolam': "-", 'lormetazepam': "|", 'prazepam': "+",
-            'flunitrazepam': ".", 'estazolam': "/", 'ethyl loflazepate': "",
-            'etizolam': "-", 'brotizolam': "|", 'clorazepate': "+", 'triazolam': ".",
-            'flurazepam': "/", 'zaleplon': "x", 'eszopiclone': "-",
-            'zopiclone': "+", 'bromazepam': "/", 'oxazepam': "x", "nitrazepam": "x",
-            'clobazam': "/", 'midazolam': "x", 'remimazolam': "-"}
+             'spinal cord and nerve root disorders': "/", 'triazulenone': "x", 'quazepam': "-", 'nordazepam': "|",
+             'tofisopam': "+", 'mexazolam': ".", 'ketazolam': "/",
+             'cinolazepam': "x", 'oxazolam': "-", 'lormetazepam': "|", 'prazepam': "+",
+             'flunitrazepam': ".", 'estazolam': "/", 'ethyl loflazepate': "",
+             'etizolam': "-", 'brotizolam': "|", 'clorazepate': "+", 'triazolam': ".",
+             'flurazepam': "/", 'zaleplon': "x", 'eszopiclone': "-",
+             'zopiclone': "+", 'bromazepam': "/", 'oxazepam': "x", "nitrazepam": "x",
+             'clobazam': "/", 'midazolam': "x", 'remimazolam': "-"}
 
 symbols = {'alprazolam': 'circle', 'diazepam': 'hexagon', 'lorazepam': 'star', 'clonazepam': 'square',
            'zolpidem': 'diamond', 'tetrazepam': 'cross', 'cloxazolam': 'x', 'clotiazepam': 'star-triangle-up-open',
@@ -73,12 +76,12 @@ symbols = {'alprazolam': 'circle', 'diazepam': 'hexagon', 'lorazepam': 'star', '
            'oxazepam': 'hexagon2-open', 'clobazam': 'triangle-se', 'triangle-sw': 'hash', 'remimazolam': 'diamond-open'}
 
 path = 'C:\\Users\\TARIQOPLATA\\PycharmProjects\\FAERS_final\\'
-#path = '/Users/ftk/Documents/Work/FAERS_final/'
+# path = '/Users/ftk/Documents/Work/FAERS_final/'
 
-drug_1 = 'zopiclone'
-drug_2 = 'eszopiclone'
-drug1 = 'zopiclone'
-drug2 = 'eszopiclone'
+drug_1 = 'brotizolam'
+drug_2 = 'etizolam'
+drug1 = 'brotizolam'
+drug2 = 'etizolam'
 
 
 def bar_chart(df):
@@ -107,81 +110,83 @@ def pie_chart(df, sex, drug):
 
 def scatter(df, drug1, drug2):
     fig_fin = make_subplots(rows=1, cols=2, subplot_titles=(drug1, drug2))
-    #BROTIZOLAM, ETIZOLAM
+    # BROTIZOLAM, ETIZOLAM
     df = df.drop_duplicates(subset=['DRUG', 'AE', 'IC025', 'Reports', 'Sex', 'PRR', 'ROR'])
     df = df.drop('IDX', axis=1)
     df = df.drop('HT_level2', axis=1)
     df = df.drop('HT', axis=1)
-    #df = df.drop('HT_level3', axis=1)
+    # df = df.drop('HT_level3', axis=1)
     df = df.drop('IC', axis=1)
-    #df = df.drop('ROR', axis=1)
+    # df = df.drop('ROR', axis=1)
     df_e = df[df['DRUG'] == drug1]
     df_e = df_e.drop_duplicates(subset=['DRUG', 'AE'])
-    df_e = df_e.sort_values(by=['ROR'], ascending=False)
+    df_e = df_e.sort_values(by=['IC025'], ascending=False)
     df_e = df_e.head(10)
     aes_1 = df_e['AE'].tolist()
     df_1 = df[df['AE'].isin(aes_1)]
     print(df_e)
 
-    fig = px.scatter(df_1, y="ROR", x="AE", color="Sex", symbol="DRUG", color_discrete_map=colors_g,
+    fig = px.scatter(df_1, y="IC025", x="AE", color="Sex", symbol="DRUG", color_discrete_map=colors_g,
                      title=drug1)
-
+    fig.update_layout(font=dict(size=18))
     fig.update_traces(marker_size=15)
-    #fig.update_layout(yaxis_range=[0, 6])
+    # fig.update_layout(yaxis_range=[0, 6])
     fig.update_xaxes(categoryorder='total descending')
-    #fig.show()
+    fig.show()
 
     df_z = df[df['DRUG'] == drug2]
     df_z = df_z.drop_duplicates(subset=['DRUG', 'AE'])
-    df_z = df_z.sort_values(by=['ROR'], ascending=False)
+    df_z = df_z.sort_values(by=['IC025'], ascending=False)
     df_z = df_z.head(10)
     aes_1 = df_z['AE'].tolist()
     df_2 = df[df['AE'].isin(aes_1)]
     print(df_z)
 
-    fig2 = px.scatter(df_1, y="ROR", x="AE", color="Sex", symbol="DRUG", color_discrete_map=colors_g,
+    fig2 = px.scatter(df_2, y="IC025", x="AE", color="Sex", symbol="DRUG", color_discrete_map=colors_g,
                       title=drug2)
     fig2.update_traces(marker_size=15)
-    #fig2.update_layout(yaxis_range=[0, 6])
+    fig2.update_layout(font=dict(size=18))
+    # fig2.update_layout(yaxis_range=[0, 6])
     fig2.update_xaxes(categoryorder='total descending')
-    #fig2.show()
+    fig2.show()
 
     # Data component
-    #data = [fig, fig2]
-    #fig_fin = go.Figure(data=data, layout=layout)
+    # data = [fig, fig2]
+    # fig_fin = go.Figure(data=data, layout=layout)
 
     fig_fin.add_trace(
         go.Scatter(
-            y=df_1["ROR"],
+            y=df_1["IC025"],
             x=df_1["AE"],
             mode='markers',
             name=drug1,
             showlegend=True,
             marker=dict(color=list(map(Setcolor, df_1["Sex"])), symbol=list(map(Setshape, df_1["DRUG"])), size=15),
         ), row=1, col=1
-        )
+    )
     fig_fin.update_layout(showlegend=True)
     fig_fin.update_xaxes(categoryorder='max descending', row=1, col=1)
     fig_fin.add_trace(
         go.Scatter(
-            y=df_2["ROR"],
+            y=df_2["IC025"],
             x=df_2["AE"],
             mode='markers',
             name=drug2,
             showlegend=True,
             marker=dict(color=list(map(Setcolor, df_2["Sex"])), symbol=list(map(Setshape, df_2["DRUG"])), size=15),
-            ), row=1, col=2
-        )
-    fig_fin.update_xaxes(categoryorder='max descending',  row=1, col=2)
-    #fig_fin.update_yaxes(range=[-6, 6], row=1, col=2)
-    #fig_fin.update_yaxes(range=[-6, 6], row=1, col=1, title_text="IC025")
+        ), row=1, col=2
+    )
+    fig_fin.update_xaxes(categoryorder='max descending', row=1, col=2)
+    # fig_fin.update_yaxes(range=[-6, 6], row=1, col=2)
+    # fig_fin.update_yaxes(range=[-6, 6], row=1, col=1, title_text="IC025")
+    fig_fin.update_layout(font=dict(size=18))
     fig_fin.update_xaxes(title_text="Adverse Events", row=1, col=1)
     fig_fin.update_xaxes(title_text="Adverse Events", row=1, col=2)
     fig.update_layout(title_text="Customizing Subplot Axes", height=700)
-    #fig_fin.update_layout(
-   #     autosize=False,
-     #   width=4100,
-     #   height=1000)
+    # fig_fin.update_layout(
+    #     autosize=False,
+    #   width=4100,
+    #   height=1000)
     fig_fin.show()
     # df2 = df.groupby(by=['AE'], as_index=False).sum()
     # df2 = df2.sort_values(by=['IC025'], ascending=False)
@@ -214,11 +219,11 @@ def Setcolor(x):
 
 def create_scatter(drug1, drug2):
     path2 = 'data\\data\\Old_gold\\'
-    #path2 = 'data/Old_gold/'
+    # path2 = 'data/Old_gold/'
     df_f = pd.read_csv(path + path2 + 'Disprop_analysis_female_with_HTs.csv')
     df_m = pd.read_csv(path + path2 + 'Disprop_analysis_male_with_HTs.csv')
-    #df_f = pd.read_csv(path + path2 + 'Disprop_analysis_female_with_HTs_before_filtering_v2.csv')
-    #df_m = pd.read_csv(path + path2 + 'Disprop_analysis_male_with_HTs_before_filtering_v2.csv')
+    # df_f = pd.read_csv(path + path2 + 'Disprop_analysis_female_with_HTs_before_filtering_v2.csv')
+    # df_m = pd.read_csv(path + path2 + 'Disprop_analysis_male_with_HTs_before_filtering_v2.csv')
 
     hts = ['psychiatric disorders', 'nervous system disorders']
     drug = [drug1, drug2]
@@ -230,16 +235,16 @@ def create_scatter(drug1, drug2):
     df_m1['Sex'] = 'M'
     frames = [df_f1, df_m1]
     df = pd.concat(frames)
-    df = df.drop(df[df.AE == 'agitation neonatal'].index)
-    df = df.drop(df[df.AE == 'foetal alcohol syndrome'].index)
-    #df = df.drop(df[df.score < 50].index)
+    # df = df.drop(df[df.AE == 'agitation neonatal'].index)
+    # df = df.drop(df[df.AE == 'foetal alcohol syndrome'].index)
+    # df = df.drop(df[df.score < 50].index)
     print(df)
     scatter(df, drug1, drug2)
 
 
 def create_bar():
     path2 = 'data\\data\\Old_gold\\'
-    #path2 = 'data/Old_gold/'
+    # path2 = 'data/Old_gold/'
     df_f_old = pd.read_csv(path + path2 + 'Disprop_analysis_female_with_HTs_before_filtering_v2.csv')
     df_m_old = pd.read_csv(path + path2 + 'Disprop_analysis_male_with_HTs_before_filtering_v2.csv')
     hts = ['psychiatric disorders', 'nervous system disorders']
@@ -272,7 +277,7 @@ def find_max(df):
         df_eszop = df_sub[df_sub['DRUG'] == 'etizolam']
         maxZop = df_zop['IC025'].max()
         maxEsz = df_eszop['IC025'].max()
-        diff = abs(maxZop-maxEsz)
+        diff = abs(maxZop - maxEsz)
         print([diff, maxEsz, maxZop, item])
         if math.isnan(diff):
             continue
